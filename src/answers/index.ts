@@ -1,5 +1,6 @@
 import seedrandom from 'seedrandom'
 import DATA from '../data/idioms.json'
+import DATA_NORMAL from '../data/idioms-normal.json'
 import { getHint } from '../logic'
 import { answers } from './list'
 import { seedShuffle } from './utils'
@@ -23,10 +24,10 @@ export function getAnswerOfDay(day: number) {
   }
 }
 
-const WORDS = seedShuffle(DATA)
+const WORDS = seedShuffle(DATA_NORMAL)
 
 export function getLevelWord(level: number) {
-  const word = WORDS[level % DATA_SET][0]
+  const word = WORDS[level % WORDS.length]
   return {
     word,
     hint: getHint(word),

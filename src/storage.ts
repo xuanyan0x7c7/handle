@@ -1,16 +1,16 @@
 import { preferZhuyin } from './i18n'
 import type { InputMode, TriesMeta } from './logic'
 
-export const legacyTries = useStorage<Record<number, string[]>>('handle-tries', {})
+export const legacyTries = useStorage<Record<number, string[]>>('handle.xuanyan.ws-tries', {})
 
-export const initialized = useStorage('handle-initialized', false)
-export const history = useStorage<Record<number, TriesMeta>>('handle-tries-meta', {})
-export const inputMode = useStorage<InputMode>('handle-mode', preferZhuyin ? 'zy' : 'py')
-export const useNumberTone = useStorage('handle-number-tone', false)
-export const colorblind = useStorage('handle-colorblind', false)
-export const hardMode = useStorage('handle-hard-mode', false)
-export const accpetCollecting = useStorage('handle-accept-collecting', true)
-export const currentLevel = useStorage('handle-level', 0)
+export const initialized = useStorage('handle.xuanyan.ws-initialized', false)
+export const history = useStorage<Record<number, TriesMeta>>('handle.xuanyan.ws-tries-meta', {})
+export const inputMode = useStorage<InputMode>('handle.xuanyan.ws-mode', preferZhuyin ? 'zy' : 'py')
+export const useNumberTone = useStorage('handle.xuanyan.ws-number-tone', false)
+export const colorblind = useStorage('handle.xuanyan.ws-colorblind', false)
+export const hardMode = useStorage('handle.xuanyan.ws-hard-mode', false)
+export const accpetCollecting = useStorage('handle.xuanyan.ws-accept-collecting', true)
+export const currentLevel = useStorage('handle.xuanyan.ws-level', 0)
 
 export const meta = computed<TriesMeta>({
   get() {
