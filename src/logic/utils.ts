@@ -16,7 +16,7 @@ export function parsePinyin(pinyin: string, mode: InputMode = 'py') {
       parts = Array.from(toShuangpin(pinyin))
     }
     else {
-      let rest = pinyin
+      let rest = /^(j|q|x|y)u/.test(pinyin) ? `${pinyin[0]}ü${pinyin.slice(2)}` : pinyin.replace('v', 'ü')
       const one = pinyinInitials.find(i => rest.startsWith(i))
       if (one)
         rest = rest.slice(one.length)

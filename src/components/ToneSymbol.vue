@@ -1,11 +1,12 @@
 <script setup lang="ts">
 defineProps<{
   tone: number
+  raise?: boolean
 }>()
 </script>
 
 <template>
-  <div>
+  <div :class="{raise}">
     <svg width="8" height="8" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path v-if="tone === 1" d="M3.35 8C2.60442 8 2 8.60442 2 9.35V10.35C2 11.0956 2.60442 11.7 3.35 11.7H17.35C18.0956 11.7 18.7 11.0956 18.7 10.35V9.35C18.7 8.60442 18.0956 8 17.35 8H3.35Z" fill="currentColor" />
       <path v-if="tone === 2" d="M16.581 3.71105C16.2453 3.27254 15.6176 3.18923 15.1791 3.52498L3.26924 12.6439C2.83073 12.9796 2.74743 13.6073 3.08318 14.0458L4.29903 15.6338C4.63478 16.0723 5.26244 16.1556 5.70095 15.8199L17.6108 6.70095C18.0493 6.3652 18.1327 5.73754 17.7969 5.29903L16.581 3.71105Z" fill="currentColor" />
@@ -14,3 +15,9 @@ defineProps<{
     </svg>
   </div>
 </template>
+
+<style scoped>
+.raise {
+  transform: translateY(-1px)
+}
+</style>

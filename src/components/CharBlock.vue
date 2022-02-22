@@ -64,7 +64,13 @@ const toneCharLeft = computed(() => {
 })
 
 const partTwo = computed(() => {
-  const two = props.char?._2 || ''
+  let two = ''
+  if (props.char?._2) {
+    if (['j', 'q', 'x', 'y'].includes(props.char?._1))
+      two = props.char._2.replace('ü', 'u')
+    else
+      two = props.char._2
+  }
   const oneLength = props.char?._1?.length || 0
   const index = toneCharLocation.value - oneLength
   // replace i with dot less for tone symbol
@@ -72,6 +78,8 @@ const partTwo = computed(() => {
     return `${two.slice(0, index)}ı${two.slice(index + 1)}`
   return two
 })
+
+const raiseTone = computed(() => !useNumberTone.value && props.char?.yin[toneCharLocation.value] === 'v')
 </script>
 
 <template>
@@ -121,7 +129,7 @@ const partTwo = computed(() => {
             </div>
             <ToneSymbol
               v-else
-              :tone="char.tone" :class="getColor(answer?.tone)"
+              :tone="char.tone" :raise="raiseTone" :class="getColor(answer?.tone)"
               absolute
               :style="{
                 left: toneCharLeft + 'px',

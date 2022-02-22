@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { dayNo, useMask } from '~/state'
-import { meta, tries } from '~/storage'
+import { useMask } from '~/state'
+import { currentLevel, meta, tries } from '~/storage'
 import { t } from '~/i18n'
 
 const isIOS = /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
@@ -28,7 +28,7 @@ async function save() {
     useMask.value = p
   }
   else {
-    await exportImage(el.value!, `${t('name')} D${dayNo.value}.png`)
+    await exportImage(el.value!, `${t('name')} L${currentLevel.value}.png`)
   }
   show.value = false
 }
@@ -64,7 +64,7 @@ async function save() {
       <WordBlocks v-for="w,i of tries" :key="i" :word="w" :revealed="true" :animate="false" />
       <div relative w-full op50 my1 text-sm>
         <div absolute text-sm left-0 bottom-0>
-          D{{ dayNo }}
+          L{{ currentLevel }}
         </div>
         <div>handle.xuanyan.ws</div>
         <div absolute text-sm right-0 bottom-0>
