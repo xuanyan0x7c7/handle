@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { t } from '~/i18n'
+import { useMask } from '~/state'
 import { currentLevel } from '~/storage'
 function nextLevel() {
   currentLevel.value = currentLevel.value == null ? 0 : currentLevel.value + 1
+  useMask.value = false
 }
 </script>
 
