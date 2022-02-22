@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { answer, dayNo, parseWord, testAnswer } from '~/state'
-import { meta, tries } from '~/storage'
+import { answer, parseWord, testAnswer } from '~/state'
+import { currentLevel, meta, tries } from '~/storage'
 import { t } from '~/i18n'
 
 const isMobile = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i)
 
 const text = computed(() =>
-  `${t('name')} ${dayNo.value} ${meta.value.answer ? 'X' : tries.value.length}/10\n\n${
+  `${t('name')} ${currentLevel.value + 1} ${meta.value.answer ? 'X' : tries.value.length}/10\n\n${
     tries.value
       .map((word) => {
         const parsed = parseWord(word, answer.value.word)
@@ -28,7 +28,7 @@ const text = computed(() =>
           })
           .join('')
       })
-      .join('\n')}\n\nhandle.antfu.me`,
+      .join('\n')}\n\nhandle.xuanyan.ws`,
 )
 const share = useShare(computed(() => ({
   title: t('name'),

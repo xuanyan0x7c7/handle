@@ -1,5 +1,4 @@
 import { preferZhuyin } from './i18n'
-import { dayNo } from './state'
 import type { InputMode, TriesMeta } from './logic'
 
 export const legacyTries = useStorage<Record<number, string[]>>('handle-tries', {})
@@ -11,15 +10,16 @@ export const useNumberTone = useStorage('handle-number-tone', false)
 export const colorblind = useStorage('handle-colorblind', false)
 export const hardMode = useStorage('handle-hard-mode', false)
 export const accpetCollecting = useStorage('handle-accept-collecting', true)
+export const currentLevel = useStorage('handle-level', 0)
 
 export const meta = computed<TriesMeta>({
   get() {
-    if (!(dayNo.value in history.value))
-      history.value[dayNo.value] = {}
-    return history.value[dayNo.value]
+    if (!(currentLevel.value in history.value))
+      history.value[currentLevel.value] = {}
+    return history.value[currentLevel.value]
   },
   set(v) {
-    history.value[dayNo.value] = v
+    history.value[currentLevel.value] = v
   },
 })
 
@@ -27,7 +27,7 @@ export const tries = computed<string[]>({
   get() {
     if (!meta.value.tries)
       meta.value.tries = []
-    return legacyTries.value[dayNo.value] || meta.value.tries
+    return legacyTries.value[currentLevel.value] || meta.value.tries
   },
   set(v) {
     meta.value.tries = v

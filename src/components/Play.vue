@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { answer, dayNo, isDev, isFailed, isFinished, isPassed, showCheatSheet, showFailed, showHelp, showHint } from '~/state'
-import { hardMode, markStart, meta, tries } from '~/storage'
+import { currentLevel, hardMode, markStart, meta, tries } from '~/storage'
 import { t } from '~/i18n'
 import { TRIES_LIMIT, WORD_LENGTH } from '~/logic'
 
@@ -58,6 +58,9 @@ watchEffect(() => {
 
 <template>
   <div>
+    <div flex="~ col" pt4 items-center text-3xl>
+      {{ t('level-n', currentLevel + 1) }}
+    </div>
     <div flex="~ col gap-2" pt4 items-center>
       <WordBlocks v-for="w,i of tries" :key="i" :word="w" :revealed="true" @click="focus()" />
 

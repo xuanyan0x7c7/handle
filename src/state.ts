@@ -1,7 +1,7 @@
 import type { ParsedChar } from './logic'
 import { START_DATE, TRIES_LIMIT, parseWord as _parseWord, testAnswer as _testAnswer, checkPass, getHint } from './logic'
-import { useNumberTone as _useNumberTone, inputMode, meta, tries } from './storage'
-import { getAnswerOfDay } from './answers'
+import { useNumberTone as _useNumberTone, currentLevel, inputMode, meta, tries } from './storage'
+import { getLevelWord } from './answers'
 
 export const now = useNow({ interval: 1000 })
 export const isDark = useDark()
@@ -34,7 +34,7 @@ export const answer = computed(() =>
       word: params.get('word')!,
       hint: getHint(params.get('word')!),
     }
-    : getAnswerOfDay(dayNo.value),
+    : getLevelWord(currentLevel.value),
 )
 
 export const hint = computed(() => answer.value.hint)

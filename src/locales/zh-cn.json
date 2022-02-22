@@ -74,5 +74,7 @@
   "win-no-hint-count": "无提示获胜次数",
   "win-rate": "获胜几率",
   "zhuyin": "注音",
-  "ziyin": "字音"
+  "ziyin": "字音",
+  "level-n": "第 {0} 关",
+  "next-level": "下一关"
 }
