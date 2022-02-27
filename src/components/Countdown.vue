@@ -19,7 +19,7 @@ function nextLevel() {
 
     <div w-1px border="l base" />
 
-    <div flex="~ col gap-2" items-center>
+    <div flex="~ col gap-4" items-center>
       <ShareButton />
       <ExportImage />
     </div>

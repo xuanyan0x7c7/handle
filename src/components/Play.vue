@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import confetti from 'canvas-confetti'
 import { answer, dayNo, isDev, isFailed, isFinished, isPassed, showCheatSheet, showFailed, showHelp, showHint } from '~/state'
 import { currentLevel, hardMode, markStart, meta, tries } from '~/storage'
 import { t } from '~/i18n'
@@ -41,6 +42,48 @@ function hint() {
 function sheet() {
   showCheatSheet.value = true
 }
+function congrats() {
+  const defaults = {
+    colors: [
+      '#5D8C7B',
+      '#F2D091',
+      '#F2A679',
+      '#D9695F',
+      '#8C4646',
+    ],
+    shapes: ['square'],
+    ticks: 500,
+  } as confetti.Options
+  confetti({
+    ...defaults,
+    particleCount: 80,
+    spread: 100,
+    origin: { y: 0 },
+  })
+  setTimeout(() => {
+    confetti({
+      ...defaults,
+      particleCount: 50,
+      angle: 60,
+      spread: 80,
+      origin: { x: 0 },
+    })
+  }, 250)
+  setTimeout(() => {
+    confetti({
+      ...defaults,
+      particleCount: 50,
+      angle: 120,
+      spread: 80,
+      origin: { x: 1 },
+    })
+  }, 400)
+}
+
+watch(isPassed, (v) => {
+  if (v)
+    setTimeout(congrats, 300)
+}, { flush: 'post' })
 
 watchEffect(() => {
   if (!showHelp.value)
@@ -49,6 +92,7 @@ watchEffect(() => {
 
 watchEffect(() => {
   if (isFailed.value && !meta.value.failed) {
+    meta.value.failed = true
     setTimeout(() => {
       showFailed.value = true
     }, 1200)
@@ -74,7 +118,7 @@ watchEffect(() => {
       </template>
 
       <template v-if="!isFinished">
-        <WordBlocks :word="input" @click="focus()" />
+        <WordBlocks :word="input" :active="true" @click="focus()" />
         <input
           ref="el"
           v-model="inputValue"
@@ -86,11 +130,11 @@ watchEffect(() => {
           border="2 base"
           text="center"
           bg="transparent"
+          :disabled="isFinished"
           @input="handleInput"
           @keydown.enter="go"
         >
         <button
-          v-if="!isPassed"
           mt3
           btn p="x6 y2"
           :disabled="input.length !== WORD_LENGTH"
@@ -136,7 +180,6 @@ watchEffect(() => {
         >
           下一天
         </a>
-        <WorldCompare />
       </template>
     </div>
   </div>

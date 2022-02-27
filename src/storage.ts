@@ -1,4 +1,4 @@
-import { preferZhuyin } from './i18n'
+import { preferZhuyin, t } from './i18n'
 import type { InputMode, TriesMeta } from './logic'
 
 export const legacyTries = useStorage<Record<number, string[]>>('handle.xuanyan.ws-tries', {})
@@ -9,6 +9,7 @@ export const inputMode = useStorage<InputMode>('handle.xuanyan.ws-mode', preferZ
 export const useNumberTone = useStorage('handle.xuanyan.ws-number-tone', false)
 export const colorblind = useStorage('handle.xuanyan.ws-colorblind', false)
 export const hardMode = useStorage('handle.xuanyan.ws-hard-mode', false)
+export const checkAssist = useStorage('handle.xuanyan.ws-check-assist', false)
 export const accpetCollecting = useStorage('handle.xuanyan.ws-accept-collecting', true)
 export const currentLevel = useStorage('handle.xuanyan.ws-level', 0)
 
@@ -67,7 +68,8 @@ export function pauseTimer() {
 }
 
 export const gamesCount = computed(() => Object.values(history.value).filter(m => m.passed || m.answer || m.failed).length)
-export const passedCount = computed(() => Object.values(history.value).filter(m => m.passed).length)
+export const passedTries = computed(() => Object.values(history.value).filter(m => m.passed))
+export const passedCount = computed(() => passedTries.value.length)
 export const noHintPassedCount = computed(() => Object.values(history.value).filter(m => m.passed && !m.hint).length)
 export const historyTriesCount = computed(() => Object.values(history.value).filter(m => m.passed || m.answer || m.failed).map(m => m.tries?.length || 0).reduce((a, b) => a + b, 0))
 
@@ -77,10 +79,14 @@ export const averageDurations = computed(() => {
   if (!items.length)
     return 0
   const durations = items.map(m => m.duration!).reduce((a, b) => a + b, 0)
-  const ts = durations / items.length / 1000
+  return formatDuration(durations / items.length)
+})
+
+export function formatDuration(duration: number) {
+  const ts = duration / 1000
   const m = Math.floor(ts / 60)
   const s = Math.round(ts % 60)
   if (m)
-    return `${m}m${s}s`
-  return `${s}s`
-})
+    return m + t('minutes') + s + t('seconds')
+  return s + t('seconds')
+}

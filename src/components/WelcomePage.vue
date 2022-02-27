@@ -51,7 +51,7 @@ const final = computed(() => ({ py: 'uo', zy: 'ㄨㄛ', sp: 'o' }[inputMode.valu
     <WordBlocks my2 :word="t('example-1')" :revealed="true" answer=" 门  " />
     <p>{{ t('intro-4') }} <b text-ok>{{ t('intro-5') }}</b> {{ t('intro-6') }}</p>
 
-    <WordBlocks my2 :word="t('example-2')" :revealed="true" answer="   仓" />
+    <WordBlocks my2 :word="t('example-2')" :revealed="true" answer="一一一水" />
     <p>{{ t('intro-7') }} <b text-mis>{{ t('intro-8') }}</b> {{ t('intro-9') }}</p>
 
     <WordBlocks my2 :word="t('example-3')" :revealed="true" answer="桥它拖 " />
@@ -69,9 +69,6 @@ const final = computed(() => ({ py: 'uo', zy: 'ㄨㄛ', sp: 'o' }[inputMode.valu
     <button btn tracking-widest p="x4 y2" @click="start()">
       {{ t('start') }}
     </button>
-    <div op50>
-      {{ t('update-tip') }}
-    </div>
 
     <Settings />
 
