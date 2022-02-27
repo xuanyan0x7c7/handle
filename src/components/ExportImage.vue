@@ -65,7 +65,7 @@ async function download() {
         {{ t('name') }}
       </div>
       <div text-sm mb2 op50 mt--1 ws-nowrap>
-        handle.antfu.me
+        handle.xuanyan.ws
       </div>
 
       <WordBlocks v-for="w,i of tries" :key="i" :word="w" :revealed="true" :animate="false" />

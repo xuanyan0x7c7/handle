@@ -6,7 +6,7 @@ import { t } from '~/i18n'
 <template>
   <div relative op50 my2 text-sm min-h-1em>
     <div absolute text-sm left-0 bottom-0 ws-nowrap>
-      L{{ currentLevel }} · {{ meta.hintLevel ? meta.hintLevel + t('hint-level') : t('hint-level-none') }}
+      L{{ currentLevel + 1 }} · {{ meta.hintLevel ? meta.hintLevel + t('hint-level') : t('hint-level-none') }}
     </div>
     <div absolute text-sm right-0 bottom-0 ws-nowrap>
       {{ formatDuration(meta.duration || 0) }} ·
