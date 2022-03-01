@@ -1,7 +1,11 @@
 import type { MatchType, ParsedChar } from './logic'
-import { START_DATE, TRIES_LIMIT, WORD_LENGTH, parseWord as _parseWord, testAnswer as _testAnswer, checkPass, getHint } from './logic'
+import { TRIES_LIMIT, WORD_LENGTH, parseWord as _parseWord, testAnswer as _testAnswer, checkPass, getHint, numberToHanzi } from './logic'
 import { useNumberTone as _useNumberTone, currentLevel, inputMode, meta, tries } from './storage'
 import { getLevelWord } from './answers'
+import { t } from './i18n'
+
+export const isIOS = /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+export const isMobile = isIOS || /iPad|iPhone|iPod|Android|Phone|webOS/i.test(navigator.userAgent)
 
 export const now = useNow({ interval: 1000 })
 export const isDark = useDark()
@@ -12,9 +16,9 @@ export const showShare = ref(false)
 export const showFailed = ref(false)
 export const showDashboard = ref(false)
 export const showVariants = ref(false)
-export const useMask = ref(false)
 export const showCheatSheet = ref(false)
-export const showPrivacyNotes = ref(false)
+export const showShareDialog = ref(false)
+export const useMask = ref(false)
 
 export const useNumberTone = computed(() => {
   if (inputMode.value === 'sp')
@@ -25,9 +29,7 @@ export const useNumberTone = computed(() => {
 })
 
 const params = new URLSearchParams(window.location.search)
-export const isDev = params.get('dev') === 'hey'
-export const daySince = useDebounce(computed(() => Math.floor((+now.value - +START_DATE) / 86400000)))
-export const dayNo = ref(+(params.get('d') || daySince.value))
+export const levelNoHanzi = computed(() => t('level-n', numberToHanzi(currentLevel.value + 1)))
 export const answer = computed(() =>
   params.get('word')
     ? {

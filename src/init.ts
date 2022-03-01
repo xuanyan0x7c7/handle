@@ -1,7 +1,6 @@
 import { currentLevel, initialized, markEnd, markStart, meta, pauseTimer } from './storage'
 import { answer, isFinished, isPassed, showHelp } from './state'
 import { t } from './i18n'
-import { sendAnalytics } from './analytics'
 
 useTitle(computed(() => `${t('name')} - ${t('description')}`))
 
@@ -20,10 +19,8 @@ watchEffect(() => {
 })
 
 watch([isFinished, meta], () => {
-  if (isFinished.value) {
+  if (isFinished.value)
     markEnd()
-    sendAnalytics()
-  }
 }, { flush: 'post' })
 
 const visible = useDocumentVisibility()

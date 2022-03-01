@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import confetti from 'canvas-confetti'
-import { answer, dayNo, isDev, isFailed, isFinished, isPassed, showCheatSheet, showFailed, showHelp, showHint } from '~/state'
-import { currentLevel, hardMode, markStart, meta, tries } from '~/storage'
+import { answer, isFailed, isFinished, isPassed, levelNoHanzi, showCheatSheet, showFailed, showHelp, showHint, useMask } from '~/state'
+import { currentLevel, gamesCount, hardMode, markStart, meta, tries } from '~/storage'
 import { t } from '~/i18n'
 import { TRIES_LIMIT, WORD_LENGTH } from '~/logic'
 
@@ -9,16 +9,12 @@ const el = ref<HTMLInputElement>()
 const input = ref('')
 const inputValue = ref('')
 
+const isFinishedDelay = debouncedRef(isFinished, 800)
+
 function go() {
   if (input.value.length !== WORD_LENGTH)
     return
   tries.value.push(input.value)
-  input.value = ''
-  inputValue.value = ''
-}
-function reset() {
-  tries.value = []
-  meta.value = {}
   input.value = ''
   inputValue.value = ''
 }
@@ -80,6 +76,16 @@ function congrats() {
   }, 400)
 }
 
+function previousLevel() {
+  currentLevel.value = currentLevel.value - 1
+  useMask.value = false
+}
+
+function nextLevel() {
+  currentLevel.value = currentLevel.value + 1
+  useMask.value = false
+}
+
 watch(isPassed, (v) => {
   if (v)
     setTimeout(congrats, 300)
@@ -102,8 +108,16 @@ watchEffect(() => {
 
 <template>
   <div>
-    <div flex="~ col" pt4 items-center text-3xl>
-      {{ t('level-n', currentLevel + 1) }}
+    <div flex="~ col" pt4 items-center text-2xl>
+      <div flex="~ gap-8">
+        <button btn px2 :disabled="currentLevel === 0" @click="previousLevel">
+          <div i-carbon-arrow-left />
+        </button>
+        {{ levelNoHanzi }}
+        <button btn px-2 :disabled="currentLevel >= gamesCount" @click="nextLevel">
+          <div i-carbon-arrow-right />
+        </button>
+      </div>
     </div>
     <div flex="~ col gap-2" pt4 items-center>
       <WordBlocks v-for="w,i of tries" :key="i" :word="w" :revealed="true" @click="focus()" />
@@ -117,70 +131,71 @@ watchEffect(() => {
         </div>
       </template>
 
-      <template v-if="!isFinished">
-        <WordBlocks :word="input" :active="true" @click="focus()" />
-        <input
-          ref="el"
-          v-model="inputValue"
-          type="text"
-          autocomplete="false"
-          outline-none
-          :placeholder="t('input-placeholder')"
-          w-86 p3
-          border="2 base"
-          text="center"
-          bg="transparent"
-          :disabled="isFinished"
-          @input="handleInput"
-          @keydown.enter="go"
-        >
-        <button
-          mt3
-          btn p="x6 y2"
-          :disabled="input.length !== WORD_LENGTH"
-          @click="go"
-        >
-          {{ t('ok-spaced') }}
-        </button>
-        <div v-if="tries.length > 4 && !isFailed" op50>
-          {{ t('tries-rest', TRIES_LIMIT - tries.length) }}
-        </div>
-        <button v-if="isFailed" icon-btn text-base gap-1 my4 inline-flex items-center justify-center @click="showFailed = true">
-          <div i-mdi-emoticon-devil-outline /> {{ t('view-answer') }}
-        </button>
+      <WordBlocks v-if="!isFinished" :word="input" :active="true" @click="focus()" />
 
-        <div flex="~ center gap-4" mt4 :class="isFinished ? 'op0! pointer-events-none' : ''">
-          <button v-if="!hardMode" icon-btn text-base pb2 gap-1 flex="~ center" @click="hint()">
-            <div i-carbon-idea /> {{ t('hint') }}
+      <Transition name="fade-out">
+        <div v-if="!isFinished" flex="~ col gap-2" items-center>
+          <input
+            ref="el"
+            v-model="inputValue"
+            type="text"
+            autocomplete="false"
+            outline-none
+            :placeholder="t('input-placeholder')"
+            w-86 p3
+            border="2 base"
+            text="center"
+            bg="transparent"
+            :disabled="isFinished"
+            @input="handleInput"
+            @keydown.enter="go"
+          >
+          <button
+            mt3
+            btn p="x6 y2"
+            :disabled="input.length !== WORD_LENGTH"
+            @click="go"
+          >
+            {{ t('ok-spaced') }}
           </button>
-          <button icon-btn text-base pb2 gap-1 flex="~ center" @click="sheet()">
-            <div i-carbon-grid /> {{ t('cheatsheet') }}
+          <div v-if="tries.length > 4 && !isFailed" op50>
+            {{ t('tries-rest', TRIES_LIMIT - tries.length) }}
+          </div>
+          <button v-if="isFailed" icon-btn text-base gap-1 my4 inline-flex items-center justify-center @click="showFailed = true">
+            <div i-mdi-emoticon-devil-outline /> {{ t('view-answer') }}
           </button>
-        </div>
-      </template>
-      <template v-else>
-        <Countdown />
-        <ToggleMask />
-      </template>
 
-      <template v-if="isDev">
-        <div h-200 />
-        <div op50>
-          测试用
+          <div flex="~ center gap-4" mt4 :class="isFinished ? 'op0! pointer-events-none' : ''">
+            <button v-if="!hardMode" icon-btn text-base pb2 gap-1 flex="~ center" @click="hint()">
+              <div i-carbon-idea /> {{ t('hint') }}
+            </button>
+            <button icon-btn text-base pb2 gap-1 flex="~ center" @click="sheet()">
+              <div i-carbon-grid /> {{ t('cheatsheet') }}
+            </button>
+          </div>
         </div>
-        <button
-          class="btn"
-          @click="reset"
-        >
-          重置
-        </button>
-        <a
-          class="btn"
-          :href="`/?d=${dayNo + 1}`"
-        >
-          下一天
-        </a>
-      </template>
+      </Transition>
+      <Transition name="fade">
+        <div v-if="isFinishedDelay && isFinished">
+          <ResultFooter />
+          <Countdown />
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
+
+<style>
+.fade-enter-active {
+  transition: all 1s ease;
+}
+.fade-out-leave-active {
+  transition: all 0.5s ease;
+}
+
+.fade-out-leave-to,
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+</style>

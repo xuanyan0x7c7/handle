@@ -4,14 +4,21 @@ import type { InputMode, TriesMeta } from './logic'
 export const legacyTries = useStorage<Record<number, string[]>>('handle.xuanyan.ws-tries', {})
 
 export const initialized = useStorage('handle.xuanyan.ws-initialized', false)
-export const history = useStorage<Record<number, TriesMeta>>('handle.xuanyan.ws-tries-meta', {})
+export const history = useStorage<TriesMeta[]>('handle.xuanyan.ws-tries-meta', [])
 export const inputMode = useStorage<InputMode>('handle.xuanyan.ws-mode', preferZhuyin ? 'zy' : 'py')
 export const useNumberTone = useStorage('handle.xuanyan.ws-number-tone', false)
 export const colorblind = useStorage('handle.xuanyan.ws-colorblind', false)
 export const hardMode = useStorage('handle.xuanyan.ws-hard-mode', false)
 export const checkAssist = useStorage('handle.xuanyan.ws-check-assist', false)
-export const accpetCollecting = useStorage('handle.xuanyan.ws-accept-collecting', true)
+export const acceptCollecting = useStorage('handle.xuanyan.ws-accept-collecting', true)
 export const currentLevel = useStorage('handle.xuanyan.ws-level', 0)
+
+if (!Array.isArray(history.value)) {
+  const newHistory: TriesMeta[] = []
+  for (const [level, meta] of Object.entries(history.value as Record<number, TriesMeta>))
+    newHistory[Number.parseInt(level)] = meta
+  history.value = newHistory
+}
 
 export const meta = computed<TriesMeta>({
   get() {
@@ -67,15 +74,15 @@ export function pauseTimer() {
   }
 }
 
-export const gamesCount = computed(() => Object.values(history.value).filter(m => m.passed || m.answer || m.failed).length)
-export const passedTries = computed(() => Object.values(history.value).filter(m => m.passed))
+export const gamesCount = computed(() => history.value.filter(m => m.passed || m.answer || m.failed).length)
+export const passedTries = computed(() => history.value.filter(m => m.passed))
 export const passedCount = computed(() => passedTries.value.length)
-export const noHintPassedCount = computed(() => Object.values(history.value).filter(m => m.passed && !m.hint).length)
-export const historyTriesCount = computed(() => Object.values(history.value).filter(m => m.passed || m.answer || m.failed).map(m => m.tries?.length || 0).reduce((a, b) => a + b, 0))
+export const noHintPassedCount = computed(() => history.value.filter(m => m.passed && !m.hint).length)
+export const historyTriesCount = computed(() => history.value.filter(m => m.passed || m.answer || m.failed).map(m => m.tries?.length || 0).reduce((a, b) => a + b, 0))
 
 export const triesCount = computed(() => tries.value.length)
 export const averageDurations = computed(() => {
-  const items = Object.values(history.value).filter(m => m.passed && m.duration)
+  const items = history.value.filter(m => m.passed && m.duration)
   if (!items.length)
     return 0
   const durations = items.map(m => m.duration!).reduce((a, b) => a + b, 0)

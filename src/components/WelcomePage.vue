@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isDark, showHelp, showPrivacyNotes, showVariants, useMask } from '~/state'
+import { isDark, showHelp, showVariants, useMask } from '~/state'
 import { initialized, inputMode } from '~/storage'
 import { t } from '~/i18n'
 
@@ -11,10 +11,6 @@ function start() {
 
 function variantButton() {
   showVariants.value = true
-}
-
-function privacyButton() {
-  showPrivacyNotes.value = true
 }
 
 const final = computed(() => ({ py: 'uo', zy: 'ㄨㄛ', sp: 'o' }[inputMode.value]))
@@ -31,9 +27,7 @@ const final = computed(() => ({ py: 'uo', zy: 'ㄨㄛ', sp: 'o' }[inputMode.valu
       </button>
     </div>
 
-    <div text-3xl font-serif tracking-widest>
-      {{ t('name') }}
-    </div>
+    <AppName h="2.5rem" />
     <div mt--1 op50 text-sm>
       {{ t('description') }}
     </div>
@@ -66,8 +60,8 @@ const final = computed(() => ({ py: 'uo', zy: 'ㄨㄛ', sp: 'o' }[inputMode.valu
 
     <div h-1px w-10 border="b base" m4 />
 
-    <button btn tracking-widest p="x4 y2" @click="start()">
-      {{ t('start') }}
+    <button btn p="x4 y2" @click="start()">
+      <span tracking-1 pl1>{{ t('start') }}</span>
     </button>
 
     <Settings />
@@ -79,9 +73,6 @@ const final = computed(() => ({ py: 'uo', zy: 'ㄨㄛ', sp: 'o' }[inputMode.valu
     </button>
 
     <div h-1px w-10 border="b base" m4 />
-    <div op50 hover:op80 @click="privacyButton()">
-      {{ t('privacy-notes') }}
-    </div>
     <div>
       <span op40>inspired by </span><a href="https://www.powerlanguage.co.uk/wordle/" target="_blank" op50 hover:op80>Wordle</a>
       <span op40>, made by </span>
