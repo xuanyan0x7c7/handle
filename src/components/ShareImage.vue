@@ -45,24 +45,24 @@ async function download() {
     {{ t('rendering') }}
   </div>
 
-  <div flex="~ gap-2" py4>
-    <button v-if="!isIOS" square-btn flex-gap-1 @click="download()">
+  <div flex="~" py4>
+    <button v-if="!isIOS" mx2 square-btn flex-gap-1 @click="download()">
       <div i-carbon-download />
       {{ t('download') }}
     </button>
 
-    <ToggleMask />
+    <ToggleMask mx2 />
   </div>
 
   <div v-if="show" fixed style="left: 200vw; top: 200vh">
-    <div ref="el" flex="~ col gap-2" items-center p="x6 y4" bg-base relative>
+    <div ref="el" flex="~ col" items-center p="x6 y4" bg-base relative>
       <AppName />
-      <div text-xs mt--1 mb2 op50 ws-nowrap>
+      <div text-xs mt1 mb3 op50 ws-nowrap>
         handle.xuanyan.ws
       </div>
 
       <WordBlocks v-for="w,i of tries" :key="i" :word="w" :revealed="true" :animate="false" />
-      <ResultFooter :day="true" />
+      <ResultFooter :day="true" mt3 />
     </div>
   </div>
 </template>

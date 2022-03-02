@@ -11,14 +11,12 @@ function nextLevel() {
 
 <template>
   <div pt12 pb16>
-    <div flex="~ col gap-4" items-center>
-      <ShareButton />
-      <div flex="~ col gap-2">
-        <ToggleMask :hint="true" />
-      </div>
+    <div flex="~ col" items-center>
+      <ShareButton m4 />
+      <ToggleMask :hint="true" />
     </div>
 
-    <div h-1px w-10 border="t base" my6 mxa />
+    <div h-1px w-10 border="t base" mt4 mb6 mxa />
 
     <button
       btn flex="~ wrap gap-x-3" items-center justify-center ws-nowrap text-xl font-serif mxa p="x4 y2"

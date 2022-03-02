@@ -119,7 +119,7 @@ watchEffect(() => {
         </button>
       </div>
     </div>
-    <div flex="~ col gap-2" pt4 items-center>
+    <div flex="~ col" pt4 items-center>
       <WordBlocks v-for="w,i of tries" :key="i" :word="w" :revealed="true" @click="focus()" />
 
       <template v-if="meta.answer">
@@ -132,6 +132,8 @@ watchEffect(() => {
       </template>
 
       <WordBlocks v-if="!isFinished" :word="input" :active="true" @click="focus()" />
+
+      <div mt-1 />
 
       <Transition name="fade-out">
         <div v-if="!isFinished" flex="~ col gap-2" items-center>
@@ -161,15 +163,15 @@ watchEffect(() => {
           <div v-if="tries.length > 4 && !isFailed" op50>
             {{ t('tries-rest', TRIES_LIMIT - tries.length) }}
           </div>
-          <button v-if="isFailed" icon-btn text-base gap-1 my4 inline-flex items-center justify-center @click="showFailed = true">
+          <button v-if="isFailed" square-btn @click="showFailed = true">
             <div i-mdi-emoticon-devil-outline /> {{ t('view-answer') }}
           </button>
 
-          <div flex="~ center gap-4" mt4 :class="isFinished ? 'op0! pointer-events-none' : ''">
-            <button v-if="!hardMode" icon-btn text-base pb2 gap-1 flex="~ center" @click="hint()">
+          <div flex="~ center" mt4 :class="isFinished ? 'op0! pointer-events-none' : ''">
+            <button v-if="!hardMode" mx2 icon-btn text-base pb2 gap-1 flex="~ center" @click="hint()">
               <div i-carbon-idea /> {{ t('hint') }}
             </button>
-            <button icon-btn text-base pb2 gap-1 flex="~ center" @click="sheet()">
+            <button mx2 icon-btn text-base pb2 gap-1 flex="~ center" @click="sheet()">
               <div i-carbon-grid /> {{ t('cheatsheet') }}
             </button>
           </div>
