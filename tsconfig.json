@@ -1,0 +1,11 @@
+{
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "vite/client"
+    ],
+    "alwaysStrict": true,
+    "strict": true,
+    "strictPropertyInitialization": true
+  }
+}
