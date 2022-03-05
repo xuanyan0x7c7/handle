@@ -1,5 +1,7 @@
 <template>
   <Title>汉兜 - 汉字 Wordle</Title>
+  <Meta name="description" content="汉兜 - 汉字 Wordle" />
+  <Link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
