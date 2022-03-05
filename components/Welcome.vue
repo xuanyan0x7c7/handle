@@ -53,6 +53,13 @@
     <button class="opacity-80 text-$c-primary hover:opacity-100" @click="showVariant()">
       其他中文 Wordle 变体
     </button>
+    <a
+      href="https://github.com/xuanyan0x7c7/handle"
+      target="_blank"
+      class="flex gap-1 justify-center items-center opacity-50 hover:opacity-80"
+    >
+      <Icon icon="carbon-logo-github" /> Source Code
+    </a>
   </section>
 </template>
 
