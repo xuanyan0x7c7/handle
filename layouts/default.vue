@@ -44,14 +44,12 @@
 </template>
 
 <script setup lang="ts">
-import { useDocumentVisibility } from '@vueuse/core';
 import { initIdioms } from '@/lib/idioms';
+import '@/lib/init';
 import { initJieba } from '@/lib/pinyin-parser';
 import {
   breakpoints,
   gameInited,
-  isFinished,
-  isPassed,
   showCheatSheet,
   showDashboard,
   showFailed,
@@ -62,7 +60,7 @@ import {
   showShareDialog,
   showVariants,
 } from '@/lib/state';
-import { colorblind, initialized, levelState, markEnd, markStart } from '@/lib/storage';
+import { colorblind } from '@/lib/storage';
 
 const lg = breakpoints.lg;
 
@@ -73,52 +71,4 @@ onBeforeMount(async () => {
   ]);
   gameInited.value = true;
 });
-
-if (!initialized.value) {
-  showHelp.value = true;
-}
-
-watch(isPassed, passed => {
-  if (passed) {
-    levelState.value.passed = true;
-  }
-},
-{ immediate: true });
-
-watch(isFinished, finished => {
-  if (finished) {
-    markEnd();
-    showCheatSheet.value = false;
-  }
-},
-{ flush: 'post' });
-
-function pauseTimer() {
-  if (levelState.value.end) {
-    return;
-  }
-  if (!levelState.value.duration) {
-    levelState.value.duration = 0;
-  }
-  if (levelState.value.start) {
-    levelState.value.duration += Date.now() - levelState.value.start;
-    levelState.value.start = undefined;
-  }
-}
-
-const visible = useDocumentVisibility();
-let leaveTime = 0;
-watch(visible, visible => {
-  if (visible === 'visible') {
-    if (leaveTime && Date.now() - leaveTime > 3 * 3600 * 1000) {
-      location.reload();
-    }
-    if (levelState.value.duration) {
-      markStart();
-    }
-  } else {
-    leaveTime = Date.now();
-    pauseTimer();
-  }
-}, { flush: 'post' });
 </script>
