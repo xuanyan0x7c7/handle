@@ -1,8 +1,4 @@
-import PINYIN_DICT from './data/dict-zi.json';
-import PHRASES_DICT_JSON from './data/phrases-dict.json';
 import PHONETIC_SYMBOL from './phonetic-symbol';
-
-const PHRASES_DICT: Record<string, string[][]> = PHRASES_DICT_JSON;
 
 export enum PINYIN_STYLE {
   NORMAL,
@@ -45,13 +41,6 @@ let jieba: {
   cut: (text: string, hmm: boolean) => string[];
 } | null = null;
 
-export async function initJieba() {
-  if (jieba == null) {
-    jieba = await import('./jieba');
-    await jieba.init();
-  }
-}
-
 function combo2array(array1: string[], array2: string[]) {
   if (array1.length === 0) {
     return array2;
@@ -73,7 +62,8 @@ function combo(array: string[][]) {
 }
 
 class Pinyin {
-  constructor(private readonly dict: string[]) {}
+  private pinyinDict: string[] = [];
+  private phrasesDict: Record<string, string[][]> = {};
 
   private static toFixed(pinyin: string, style: PINYIN_STYLE) {
     if (style === PINYIN_STYLE.NORMAL) {
@@ -100,6 +90,11 @@ class Pinyin {
     }
   }
 
+  setDict(pinyinDict: string[], phrasesDict: Record<string, string[][]>) {
+    this.pinyinDict = pinyinDict;
+    this.phrasesDict = phrasesDict;
+  }
+
   convert(hans: string, options: Partial<Options> = {}) {
     const mergedOptions: Options = Object.assign({}, DEFAULT_OPTIONS, options);
     const phrases = mergedOptions.segment ? jieba!.cut(hans, true) : hans;
@@ -107,7 +102,7 @@ class Pinyin {
     let noHans = '';
     for (const words of phrases) {
       const firstCharCode = words.charCodeAt(0);
-      if (PINYIN_DICT[firstCharCode]) {
+      if (this.pinyinDict[firstCharCode]) {
         if (noHans.length > 0) {
           pinyins.push([noHans]);
           noHans = '';
@@ -142,7 +137,7 @@ class Pinyin {
     let noHans = '';
     for (const words of hans) {
       const firstCharCode = words.charCodeAt(0);
-      if (this.dict[firstCharCode]) {
+      if (this.pinyinDict[firstCharCode]) {
         if (noHans.length > 0) {
           pinyins.push([noHans]);
           noHans = '';
@@ -160,8 +155,8 @@ class Pinyin {
 
   private phrasePinyin(phrase: string, options: Options) {
     const pinyins: string[][] = [];
-    if (phrase in PHRASES_DICT) {
-      for (const item of PHRASES_DICT[phrase]) {
+    if (phrase in this.phrasesDict) {
+      for (const item of this.phrasesDict[phrase]) {
         pinyins.push(
           options.heteronym
             ? item.map(pyItem => Pinyin.toFixed(pyItem, options.style))
@@ -178,10 +173,10 @@ class Pinyin {
 
   private singlePinyin(han: string, options: Options): string[] {
     const hanCode = han.charCodeAt(0);
-    if (!this.dict[hanCode]) {
+    if (!this.pinyinDict[hanCode]) {
       return [han];
     }
-    const pys = this.dict[hanCode].split(',');
+    const pys = this.pinyinDict[hanCode].split(',');
     if (!options.heteronym) {
       return [Pinyin.toFixed(pys[0], options.style)];
     }
@@ -199,4 +194,21 @@ class Pinyin {
   }
 }
 
-export default new Pinyin(PINYIN_DICT);
+const pinyin = new Pinyin();
+
+export async function initJieba() {
+  if (jieba == null) {
+    jieba = await import('./jieba');
+    await jieba.init();
+    const [
+      { default: pinyinDict },
+      { default: phrasesDict },
+    ] = await Promise.all([
+      import('./data/dict-zi.json'),
+      import('./data/phrases-dict.json'),
+    ]);
+    pinyin.setDict(pinyinDict, phrasesDict);
+  }
+}
+
+export default pinyin;

@@ -1,8 +1,7 @@
 import seedrandom from 'seedrandom';
-import ALL_IDIOMS_LIST from './all.json';
-import NORMAL_IDIOMS_LIST from './normal.json';
 
-const ALL_IDIOMS_SET = new Set(ALL_IDIOMS_LIST);
+let ALL_IDIOMS_SET = new Set<string>();
+export const IDIOMS: string[] = [];
 
 export function isIdiom(word: string) {
   return ALL_IDIOMS_SET.has(word);
@@ -10,17 +9,27 @@ export function isIdiom(word: string) {
 
 const RANDOM_SEED = (import.meta.env.VITE_RANDOM_SEED as string | undefined) ?? 'handle';
 
-function seedShuffle<T>(array: T[], seed = RANDOM_SEED): T[] {
+function seedShuffle<T>(array: T[], seed = RANDOM_SEED) {
   const rng = seedrandom(seed);
   for (let currentIndex = array.length; currentIndex > 0; --currentIndex) {
     const randomIndex = Math.floor(rng() * currentIndex);
     currentIndex--;
     [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
   }
-  return array;
 }
 
-export const IDIOMS = seedShuffle(NORMAL_IDIOMS_LIST);
+export async function initIdioms() {
+  const [
+    { default: allDict },
+    { default: normalDict },
+  ] = await Promise.all([
+    import('./all.json'),
+    import('./normal.json'),
+  ]);
+  ALL_IDIOMS_SET = new Set(allDict);
+  seedShuffle(normalDict);
+  IDIOMS.push(...normalDict);
+}
 
 function getHint(word: string) {
   return word[Math.floor(seedrandom(word)() * word.length)];

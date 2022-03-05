@@ -45,6 +45,7 @@
 
 <script setup lang="ts">
 import { useDocumentVisibility } from '@vueuse/core';
+import { initIdioms } from '@/lib/idioms';
 import { initJieba } from '@/lib/pinyin-parser';
 import {
   breakpoints,
@@ -66,8 +67,10 @@ const lg = breakpoints.lg;
 const loaded = ref(false);
 
 onBeforeMount(async () => {
-  await initJieba();
-  await new Promise(resolve => setTimeout(resolve, 1e4));
+  await Promise.all([
+    initIdioms(),
+    initJieba(),
+  ]);
   loaded.value = true;
 });
 
