@@ -95,6 +95,7 @@ export function isBetterMatch(
   previousParsedInput: ParsedChar[],
   previousMatch: MatchResult[],
 ) {
+  console.log(currentParsedInput, currentMatch, previousParsedInput, previousMatch);
   for (const key of ['char', 'displayInitial', 'final', 'tone'] as const) {
     const currentMisplacedCount: Record<string | number, number> = {};
     const previousMisplacedCount: Record<string | number, number> = {};
@@ -103,22 +104,21 @@ export function isBetterMatch(
       const currentMatchItem = currentMatch[charIndex][key];
       const previousItem = previousParsedInput[charIndex][key];
       const previousMatchItem = previousMatch[charIndex][key];
-      if (!previousItem) {
-        continue;
-      }
-      if (previousMatchItem === 'exact') {
-        if (currentMatchItem !== 'exact') {
+      if (previousItem && previousMatchItem === 'exact') {
+        if (currentMatchItem === 'exact') {
+          continue;
+        } else {
           return false;
         }
-      } else {
-        if (currentItem && currentMatchItem !== 'none') {
-          currentMisplacedCount[currentItem] = (currentMisplacedCount[currentItem] ?? 0) + 1;
-        }
-        if (previousMatchItem === 'misplaced') {
-          previousMisplacedCount[previousItem] = (previousMisplacedCount[previousItem] ?? 0) + 1;
-        }
+      }
+      if (currentItem && currentMatchItem !== 'none') {
+        currentMisplacedCount[currentItem] = (currentMisplacedCount[currentItem] ?? 0) + 1;
+      }
+      if (previousItem && previousMatchItem === 'misplaced') {
+        previousMisplacedCount[previousItem] = (previousMisplacedCount[previousItem] ?? 0) + 1;
       }
     }
+    console.log(key, currentMisplacedCount, previousMisplacedCount);
     for (const item of Object.keys(previousMisplacedCount)) {
       if ((currentMisplacedCount[item] ?? 0) < previousMisplacedCount[item]) {
         return false;
