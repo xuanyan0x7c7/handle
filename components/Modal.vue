@@ -9,7 +9,7 @@
       @click="$emit('update:modelValue', false)"
     />
     <div
-      class="absolute bg-base border-gray-400/10 transition-all duration-500 ease-out max-w-screen max-h-screen overflow-auto transform"
+      class="absolute bg-base border-gray-400/10 transition-all duration-200 ease-out max-w-screen max-h-screen-display overflow-auto transform"
       :class="[...positionClass, transformClass]"
     >
       <slot />

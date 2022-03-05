@@ -5,6 +5,15 @@
   </NuxtLayout>
 </template>
 
+<script setup lang="ts">
+import { useWindowSize } from '@vueuse/core';
+
+const { height } = useWindowSize();
+watch(height, height => {
+  document.documentElement.style.setProperty('--vh', `${height / 100}px`);
+});
+</script>
+
 <style>
 html, body, #__nuxt {
   height: 100%;

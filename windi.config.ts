@@ -6,6 +6,9 @@ export default defineConfig({
   plugins: [
     plugin(({ addUtilities }) => {
       addUtilities({
+        '.max-h-screen-display': {
+          'max-height': 'calc(var(--vh, 1vh) * 100)',
+        },
         '.transform-3d': {
           'transform-style': 'preserve-3d',
         },
