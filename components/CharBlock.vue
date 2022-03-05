@@ -15,11 +15,34 @@
         :class="useMask ? 'top-14px' : 'top-11px'"
       >
         <div class="relative flex justify-center items-start m-auto">
-          <div v-if="charDisplay.initial" class="mx-px" :class="getColorClass(parsed.displayInitial)">
-            {{ charDisplay.initial }}
+          <div v-if="charDisplay.initial" class="flex mx-px">
+            <div v-for="c, index of charDisplay.initial" :key="index" class="relative">
+              <span :class="getColorClass(parsed.displayInitial)">{{ c }}</span>
+              <ToneSymbol
+                v-if="!useNumberTone && toneCharLocation === index"
+                :tone="char.tone"
+                class="absolute w-[86%] left-[8%]"
+                :class="[getColorClass(parsed.tone), useMask ? 'bottom-5' : 'bottom-3.2']"
+              />
+            </div>
           </div>
-          <div v-if="charDisplay.final" class="mx-px" :class="getColorClass(parsed.final)">
-            {{ charDisplay.final }}
+          <div v-if="charDisplay.final" class="flex mx-px">
+            <div v-for="c, index of charDisplay.final" :key="index" class="relative">
+              <span :class="getColorClass(parsed.final)">{{ c }}</span>
+              <ToneSymbol
+                v-if="!useNumberTone && toneCharLocation === charDisplay.initial.length + index"
+                :tone="char.tone"
+                class="absolute w-[86%] left-[8%]"
+                :class="[
+                  getColorClass(parsed.tone),
+                  {
+                    'bottom-5': useMask,
+                    'bottom-4': !useMask && c === 'ü',
+                    'bottom-3.2': !useMask && c !== 'ü',
+                  }
+                ]"
+              />
+            </div>
           </div>
           <div
             v-if="useNumberTone"
@@ -28,19 +51,6 @@
           >
             {{ char.tone }}
           </div>
-          <ToneSymbol
-            v-else
-            :tone="char.tone"
-            class="absolute -mt-1 transform"
-            :class="[
-              getColorClass(parsed.tone),
-              { '-translate-y-px': raiseTone && !useMask }
-            ]"
-            :style="{
-              left: toneCharLeftOffset + 'px',
-              top: useMask ? '-8px' : '-1.2px'
-            }"
-          />
         </div>
       </div>
     </template>
@@ -73,14 +83,6 @@ const toneCharLocation = computed(() => {
   ].find(x => x >= 0) ?? 0;
 });
 
-const toneCharLeftOffset = computed(() => {
-  if (props.char == null) {
-    return 0;
-  }
-  const gaps = toneCharLocation.value < props.char.initial.length ? 0 : 1;
-  return 1 + toneCharLocation.value * 10.2 + gaps * 2.3;
-});
-
 const charDisplay = computed(() => {
   if (props.char == null) {
     return { initial: '', final: '' };
@@ -106,8 +108,6 @@ const parsed = computed(() => {
   } as Partial<ExtendedMatchResult>;
 });
 
-const raiseTone = computed(() => props.char?.pinyin[toneCharLocation.value] === 'v');
-
 const blockColorClass = computed(() => {
   if (!props.answer) {
     return 'border-gray-400/10';
@@ -129,7 +129,7 @@ function getColorClass(matchType?: ExtendedMatchType, isChar = false) {
   const colors = {
     exact: ['text-$c-ok'],
     misplaced: ['text-$c-misplaced'],
-    none: [isChar ? 'opacity-80' : 'opacity-40'],
+    none: [isChar ? 'opacity-80' : 'opacity-35'],
     deleted: ['opacity-30', 'line-through'],
   };
   return [...classList, ...colors[matchType]];
