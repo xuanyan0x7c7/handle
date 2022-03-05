@@ -1,14 +1,5 @@
 export const pinyinInitials = 'b p m f d t n l g k h j q x zh ch sh r z c s'.split(/\s/g);
-
-export const pinyinFinals = 'a o e ai ei ao ou an en ang eng ong i ia ie iao iou ian in iang ing iong u ua uo uai uei uan uen uang ueng ü üe üan ün er'
-  .split(/\s/g)
-  .sort((a, b) => {
-    const x = a.length - b.length;
-    if (x === 0) {
-      return a.localeCompare(b);
-    }
-    return x;
-  });
+export const pinyinFinals = 'a o e ai ei ao ou an en ang eng ong i ia ie iao iou ian in iang ing iong u ua uo uai uei uan uen uang ueng ü üe üan ün er'.split(/\s/g);
 
 type Pinyin = {
   pinyin: string;
@@ -32,7 +23,7 @@ export function parsePinyin(pinyin: string) {
     .replace(/w(?!u)/, 'u')
     .replace('y', '')
     .replace('w', '');
-  const initial = pinyinInitials.find(initial => formattedPinyin.startsWith(initial)) ?? '';
+  const initial = ['ng', ...pinyinInitials].find(initial => formattedPinyin.startsWith(initial)) ?? '';
   const final = formattedPinyin.slice(initial.length);
   let displayInitial = initial;
   if (!initial) {
