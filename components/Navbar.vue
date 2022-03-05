@@ -28,10 +28,10 @@
 </template>
 
 <script setup lang="ts">
-import { useToggle } from '@vueuse/core';
-import { isDark, showDashboard, showHelp, showLevelList, showSettings, useMask } from '@/lib/state';
+import { showDashboard, showHelp, showLevelList, showSettings, useMask } from '@/lib/state';
 import { gamesCount } from '@/lib/storage';
 
+const isDark = useDark();
 const toggleDark = useToggle(isDark);
 const toggleSettings = useToggle(showSettings);
 const toggleDashboard = useToggle(showDashboard);

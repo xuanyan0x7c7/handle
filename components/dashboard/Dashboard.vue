@@ -64,22 +64,22 @@ import { showDashboard } from '@/lib/state';
 import { gamesCount, history } from '@/lib/storage';
 import { formatDuration } from '@/lib/util';
 
-const passedTrials = computed(() => history.value.filter(level => level.passed));
+const passedTrials = computed(() => history.value.filter(state => state?.passed).map(x => x!));
 const passedCount = computed(() => passedTrials.value.length);
-const noHintPassedCount = computed(() => history.value.filter(level => level.passed && level.hintLevel == null).length);
-const hardPassedCount = computed(() => history.value.filter(level => level.passed && level.mode === 'hard').length);
-const nightmarePassedCount = computed(() => history.value.filter(level => level.passed && level.mode === 'nightmare').length);
+const noHintPassedCount = computed(() => history.value.filter(state => state?.passed && state.hintLevel == null).length);
+const hardPassedCount = computed(() => history.value.filter(state => state?.passed && state.mode === 'hard').length);
+const nightmarePassedCount = computed(() => history.value.filter(state => state?.passed && state.mode === 'nightmare').length);
 const historyTrialsCount = computed(
   () => history.value
-    .filter(level => level.passed || level.answer || level.failed)
-    .map(level => level.trials?.length || 0)
+    .filter(state => state && (state.passed || state.answer || state.failed))
+    .map(state => state!.trials?.length ?? 0)
     .reduce((x, y) => x + y, 0),
 );
 
 const trialsCountList = computed(() => {
   const list = new Array<number>(11).fill(0);
-  for (const level of passedTrials.value) {
-    const count = Math.min(level.trials!.length, 10);
+  for (const state of passedTrials.value) {
+    const count = Math.min(state.trials!.length, 10);
     ++list[count];
   }
   while (list[list.length - 1] === 0) {
@@ -91,7 +91,7 @@ const trialsCountList = computed(() => {
 const trialsMaxCount = computed(() => Math.max(1, ...trialsCountList.value));
 
 const averageDuration = computed(() => {
-  const items = history.value.filter(m => m.passed && m.duration);
+  const items = history.value.filter(level => level?.passed && level.duration).map(x => x!);
   if (items.length === 0) {
     return null;
   }

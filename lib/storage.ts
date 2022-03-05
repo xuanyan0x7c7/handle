@@ -1,4 +1,3 @@
-import { useLocalStorage } from '@vueuse/core';
 import { version as packageVersion } from '../package.json';
 import type { HardMode, LevelState } from './types';
 

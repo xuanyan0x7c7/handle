@@ -48,7 +48,6 @@
 </template>
 
 <script setup lang="ts">
-import { useToggle } from '@vueuse/core';
 import { checkAssist, colorblind, hardMode, useNumberTone } from '@/lib/storage';
 
 const toggleColorblind = useToggle(colorblind);

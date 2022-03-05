@@ -1,11 +1,9 @@
-import { breakpointsTailwind, useBreakpoints, useDark } from '@vueuse/core';
 import { TRIALS_LIMIT } from './constants';
 import { getIdiomOfLevel } from './idioms';
 import { matchAnswer, parseWord } from './pinyin';
 import { currentLevel, levelState, trials } from './storage';
 import type { MatchType } from './types';
 
-export const isDark = useDark();
 export const showHint = ref(false);
 export const showSettings = ref(false);
 export const showHelp = ref(false);
@@ -17,7 +15,6 @@ export const showCheatSheet = ref(false);
 export const showShareDialog = ref(false);
 export const showLevelList = ref(false);
 export const useMask = ref(false);
-export const breakpoints = useBreakpoints(breakpointsTailwind);
 
 export const gameInited = ref(false);
 

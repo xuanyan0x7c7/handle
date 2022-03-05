@@ -13,7 +13,6 @@
 </template>
 
 <script setup lang="ts">
-import { useToggle } from '@vueuse/core';
 import { useMask } from '@/lib/state';
 
 const props = defineProps<{ hint?: boolean }>();

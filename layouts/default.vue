@@ -44,11 +44,11 @@
 </template>
 
 <script setup lang="ts">
+import { breakpointsTailwind } from '@vueuse/core';
 import { initIdioms } from '@/lib/idioms';
 import '@/lib/init';
 import { initJieba } from '@/lib/pinyin-parser';
 import {
-  breakpoints,
   gameInited,
   showCheatSheet,
   showDashboard,
@@ -62,6 +62,7 @@ import {
 } from '@/lib/state';
 import { colorblind } from '@/lib/storage';
 
+const breakpoints = useBreakpoints(breakpointsTailwind);
 const lg = breakpoints.lg;
 
 onBeforeMount(async () => {

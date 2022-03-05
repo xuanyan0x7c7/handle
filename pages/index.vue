@@ -83,7 +83,6 @@
 </template>
 
 <script setup lang="ts">
-import { debouncedRef, useToggle } from '@vueuse/core';
 import { TRIALS_LIMIT } from '@/lib/constants';
 import { isBetterMatch, matchAnswer, parseWord } from '@/lib/pinyin';
 import { isIdiom } from '@/lib/idioms';

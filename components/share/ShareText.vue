@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { useClipboard, useShare } from '@vueuse/core';
 import { matchAnswer, parseWord } from '@/lib/pinyin';
 import { levelNoHanzi, parsedAnswer } from '@/lib/state';
 import { levelState, trials } from '@/lib/storage';

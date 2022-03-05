@@ -64,10 +64,10 @@
 </template>
 
 <script setup lang="ts">
-import { useToggle } from '@vueuse/core';
-import { isDark, showHelp, showVariants, useMask } from '@/lib/state';
+import { showHelp, showVariants, useMask } from '@/lib/state';
 import { initialized } from '@/lib/storage';
 
+const isDark = useDark();
 const toggleDark = useToggle(isDark);
 
 function start() {
