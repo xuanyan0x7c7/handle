@@ -8,7 +8,7 @@ if (localStorage.getItem('handle-version') == null) {
 
 export const version = useLocalStorage('handle-version', packageVersion);
 export const initialized = useLocalStorage('handle-initialized', false);
-export const history = useLocalStorage<LevelState[]>('handle-level-state', []);
+export const history = useLocalStorage<(LevelState | null)[]>('handle-level-state', []);
 export const useNumberTone = useLocalStorage('handle-number-tone', false);
 export const colorblind = useLocalStorage('handle-colorblind', false);
 export const hardMode = useLocalStorage<HardMode>('handle-hard-mode', null);
@@ -17,10 +17,10 @@ export const currentLevel = useLocalStorage('handle-level', 0);
 
 export const levelState = computed<LevelState>({
   get() {
-    if (!(currentLevel.value in history.value)) {
+    if (history.value[currentLevel.value] == null) {
       history.value[currentLevel.value] = {};
     }
-    return history.value[currentLevel.value];
+    return history.value[currentLevel.value]!;
   },
   set(state) {
     history.value[currentLevel.value] = state;
@@ -62,4 +62,6 @@ export function markEnd() {
   }
 }
 
-export const gamesCount = computed(() => history.value.filter(level => level.passed || level.answer || level.failed).length);
+export const gamesCount = computed(
+  () => history.value.filter(level => level && (level.passed || level.answer || level.failed)).length,
+);

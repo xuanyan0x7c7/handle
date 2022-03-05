@@ -21,14 +21,10 @@ import { useMask } from '@/lib/state';
 import { currentLevel, history } from '@/lib/storage';
 
 const nextLevel = computed(() => {
-  for (let levelNumber = 0; levelNumber < IDIOMS.length; ++levelNumber) {
-    if (levelNumber in history.value) {
-      const level = history.value[levelNumber];
-      if (!level.passed && !level.answer && !level.failed) {
-        return levelNumber;
-      }
-    } else {
-      return levelNumber;
+  for (let level = 0; level < IDIOMS.length; ++level) {
+    const state = history.value[level];
+    if (state == null || !state.passed && !state.answer) {
+      return level;
     }
   }
   return null;

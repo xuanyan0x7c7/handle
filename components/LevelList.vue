@@ -41,19 +41,19 @@ import { currentLevel, history } from '@/lib/storage';
 const page = ref(Math.floor(currentLevel.value / 20));
 
 function levelHasAnswer(level: number) {
-  if (!(level in history.value)) {
-    return null;
-  }
   const state = history.value[level];
-  return state.passed || state.answer;
+  if (state == null) {
+    return null;
+  } else {
+    return state.passed || state.answer;
+  }
 }
 
 function getLevelStatusClass(level: number) {
-  if (!(level in history.value)) {
-    return 'bg-gray-400';
-  }
   const state = history.value[level];
-  if (state.failed) {
+  if (state == null) {
+    return 'bg-gray-400';
+  } else if (state.failed) {
     return 'bg-$c-misplaced';
   } else if (state.passed) {
     return '';
