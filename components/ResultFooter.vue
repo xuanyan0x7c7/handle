@@ -3,7 +3,7 @@
     <template v-if="level">
       {{ levelNoHanzi }} ·
     </template>
-    {{ hintText }} ·
+    {{ levelMode }} ·
     {{ formatDuration(levelState.duration ?? 0) }}
   </footer>
 </template>
@@ -15,8 +15,12 @@ import { formatDuration } from '@/lib/util';
 
 defineProps<{ level?: boolean }>();
 
-const hintText = computed(() => {
-  if (levelState.value.hintLevel == null) {
+const levelMode = computed(() => {
+  if (levelState.value.mode === 'nightmare') {
+    return '地狱模式';
+  } else if (levelState.value.mode === 'hard') {
+    return '困难模式';
+  } else if (levelState.value.hintLevel == null) {
     return '无提示';
   } else if (levelState.value.hintLevel === 'pinyin') {
     return '字音提示';

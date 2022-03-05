@@ -42,8 +42,21 @@ const lines = computed(() => {
       .join('');
   });
 
+  let levelMode = '';
+  if (levelState.value.mode === 'nightmare') {
+    levelMode = '地狱模式';
+  } else if (levelState.value.mode === 'hard') {
+    levelMode = '困难模式';
+  } else if (levelState.value.hintLevel == null) {
+    levelMode = '无提示';
+  } else if (levelState.value.hintLevel === 'pinyin') {
+    levelMode = '字音提示';
+  } else {
+    levelMode = '汉字提示';
+  }
+
   return [
-    ['汉兜', levelNoHanzi.value, levelState.value.hintLevel ? '' : '无提示'].filter(Boolean).join(' · '),
+    ['汉兜', levelNoHanzi.value, levelMode].filter(Boolean).join(' · '),
     '',
     ...table,
     '',
