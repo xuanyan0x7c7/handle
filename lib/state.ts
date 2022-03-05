@@ -24,22 +24,6 @@ export const gameInited = ref(false);
 export const levelAnswer = computed(() => getIdiomOfLevel(currentLevel.value));
 export const parsedAnswer = computed(() => parseWord(levelAnswer.value.word));
 
-export const isPassed = computed(() => {
-  if (!gameInited.value) {
-    return false;
-  }
-  if (levelState.value.passed) {
-    return true;
-  } else if (trials.value.length === 0) {
-    return false;
-  }
-  const lastTrial = trials.value[trials.value.length - 1];
-  return matchAnswer(parseWord(lastTrial), parsedAnswer.value).every(result => result.char === 'exact');
-});
-
-export const isFailed = computed(() => !isPassed.value && trials.value.length >= TRIALS_LIMIT);
-export const isFinished = computed(() => isPassed.value || levelState.value.answer);
-
 export const parsedTrials = computed(() => {
   if (!gameInited.value) {
     return null;
@@ -50,6 +34,22 @@ export const parsedTrials = computed(() => {
     return { word, result };
   });
 });
+
+export const isPassed = computed(() => {
+  if (!gameInited.value) {
+    return false;
+  }
+  if (levelState.value.passed) {
+    return true;
+  } else if (parsedTrials.value!.length === 0) {
+    return false;
+  }
+  const lastTrial = parsedTrials.value![parsedTrials.value!.length - 1];
+  return lastTrial.result.every(result => result.char === 'exact');
+});
+
+export const isFailed = computed(() => !isPassed.value && trials.value.length >= TRIALS_LIMIT);
+export const isFinished = computed(() => isPassed.value || levelState.value.answer);
 
 export function getSymbolState(symbol?: string | number, key?: 'displayInitial' | 'final' | 'tone') {
   if (!gameInited.value) {
