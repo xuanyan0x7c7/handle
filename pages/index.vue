@@ -121,7 +121,7 @@ const isBetterInput = computed(() => {
   }
   const parsedInput = parseWord(input.value);
   const matchResult = matchAnswer(parsedInput, parsedAnswer.value);
-  return parsedTrials.value.every(trial => isBetterMatch(parsedInput, matchResult, trial.word, trial.result));
+  return parsedTrials.value!.every(trial => isBetterMatch(parsedInput, matchResult, trial.word, trial.result));
 });
 
 const isValidInput = computed(() => {

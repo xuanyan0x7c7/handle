@@ -4,7 +4,7 @@
     :class="{ colorblind }"
   >
     <Navbar />
-    <template v-if="loaded">
+    <template v-if="gameInited">
       <main class="block p-4">
         <slot />
       </main>
@@ -49,6 +49,7 @@ import { initIdioms } from '@/lib/idioms';
 import { initJieba } from '@/lib/pinyin-parser';
 import {
   breakpoints,
+  gameInited,
   isFinished,
   isPassed,
   showCheatSheet,
@@ -64,14 +65,13 @@ import {
 import { colorblind, initialized, levelState, markEnd, markStart } from '@/lib/storage';
 
 const lg = breakpoints.lg;
-const loaded = ref(false);
 
 onBeforeMount(async () => {
   await Promise.all([
     initIdioms(),
     initJieba(),
   ]);
-  loaded.value = true;
+  gameInited.value = true;
 });
 
 if (!initialized.value) {

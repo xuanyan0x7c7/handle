@@ -19,10 +19,15 @@ export const showLevelList = ref(false);
 export const useMask = ref(false);
 export const breakpoints = useBreakpoints(breakpointsTailwind);
 
+export const gameInited = ref(false);
+
 export const levelAnswer = computed(() => getIdiomOfLevel(currentLevel.value));
 export const parsedAnswer = computed(() => parseWord(levelAnswer.value.word));
 
 export const isPassed = computed(() => {
+  if (!gameInited.value) {
+    return false;
+  }
   if (levelState.value.passed) {
     return true;
   } else if (trials.value.length === 0) {
@@ -35,15 +40,23 @@ export const isPassed = computed(() => {
 export const isFailed = computed(() => !isPassed.value && trials.value.length >= TRIALS_LIMIT);
 export const isFinished = computed(() => isPassed.value || levelState.value.answer);
 
-export const parsedTrials = computed(() => trials.value.map(trial => {
-  const word = parseWord(trial);
-  const result = matchAnswer(word, parsedAnswer.value);
-  return { word, result };
-}));
+export const parsedTrials = computed(() => {
+  if (!gameInited.value) {
+    return null;
+  }
+  return trials.value.map(trial => {
+    const word = parseWord(trial);
+    const result = matchAnswer(word, parsedAnswer.value);
+    return { word, result };
+  });
+});
 
 export function getSymbolState(symbol?: string | number, key?: 'displayInitial' | 'final' | 'tone') {
+  if (!gameInited.value) {
+    return null;
+  }
   const results: MatchType[] = [];
-  for (const trial of parsedTrials.value) {
+  for (const trial of parsedTrials.value!) {
     for (let i = 0; i < 4; i++) {
       const word = trial.word[i];
       const result = trial.result[i];
