@@ -5,7 +5,7 @@
         <button :class="buttonClass(!useNumberTone)" @click="useNumberTone = false">
           符号声调
         </button>
-        <div class="w-1px h-4 border-r border-gray-400/10" />
+        <div class="w-px h-4 border-r border-gray-400/10" />
         <button :class="buttonClass(useNumberTone)" @click="useNumberTone = true">
           数字声调
         </button>
@@ -16,11 +16,11 @@
         <button :class="buttonClass(hardMode == null)" @click="switchHardMode(null)">
           普通模式
         </button>
-        <div class="w-1px h-4 border-r border-gray-400/10" />
+        <div class="w-px h-4 border-r border-gray-400/10" />
         <button :class="buttonClass(hardMode === 'hard')" @click="switchHardMode('hard')">
           困难模式
         </button>
-        <div class="w-1px h-4 border-r border-gray-400/10" />
+        <div class="w-px h-4 border-r border-gray-400/10" />
         <button :class="buttonClass(hardMode === 'nightmare')" @click="switchHardMode('nightmare')">
           地狱模式
         </button>

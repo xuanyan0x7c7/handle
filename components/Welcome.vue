@@ -83,6 +83,6 @@ function showVariant() {
 
 <style scoped lang="postcss">
 .separator {
-  @apply w-10 h-1px m-4 border-b border-gray-400/10;
+  @apply w-10 h-px m-4 border-b border-gray-400/10;
 }
 </style>

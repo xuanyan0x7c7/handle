@@ -15,15 +15,15 @@
         :class="useMask ? 'top-14px' : 'top-11px'"
       >
         <div class="relative flex justify-center items-start m-auto">
-          <div v-if="charDisplay.initial" class="mx-1px" :class="getColorClass(parsed.displayInitial)">
+          <div v-if="charDisplay.initial" class="mx-px" :class="getColorClass(parsed.displayInitial)">
             {{ charDisplay.initial }}
           </div>
-          <div v-if="charDisplay.final" class="mx-1px" :class="getColorClass(parsed.final)">
+          <div v-if="charDisplay.final" class="mx-px" :class="getColorClass(parsed.final)">
             {{ charDisplay.final }}
           </div>
           <div
             v-if="useNumberTone"
-            class="-mt-1 ml-1px -mr-3 text-xs leading-1em"
+            class="-mt-1 ml-px -mr-3 text-xs leading-1em"
             :class="getColorClass(parsed?.tone)"
           >
             {{ char.tone }}
@@ -34,7 +34,7 @@
             class="absolute -mt-1 transform"
             :class="[
               getColorClass(parsed.tone),
-              { '-translate-y-1px': raiseTone && !useMask }
+              { '-translate-y-px': raiseTone && !useMask }
             ]"
             :style="{
               left: toneCharLeftOffset + 'px',
