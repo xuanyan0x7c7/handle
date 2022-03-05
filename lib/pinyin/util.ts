@@ -28,7 +28,7 @@ export function parsePinyin(pinyin: string) {
     .replace('iu', 'iou')
     .replace('ui', 'uei')
     .replace('un', 'uen')
-    .replace(/y(?!i)/, 'i')
+    .replace(/y(?![iü])/, 'i')
     .replace(/w(?!u)/, 'u')
     .replace('y', '')
     .replace('w', '');
