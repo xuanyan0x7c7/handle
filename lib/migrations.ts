@@ -4,30 +4,40 @@ import { IDIOMS, isIdiom } from './idioms';
 import { isBetterMatch, matchAnswer, parseWord } from './pinyin';
 import { history, version } from './storage';
 
+let levelModesRecalculated = false;
+
 function recalculateLevelModes() {
+  if (levelModesRecalculated) {
+    return;
+  }
   for (let level = 0; level < history.value.length; ++level) {
     const state = history.value[level];
     if (state?.trials == null) {
       continue;
-    }
-    if (state.hintLevel || state.trials.some(trial => !isIdiom(trial))) {
+    } else if (state.hintLevel || state.trials.some(trial => !isIdiom(trial))) {
       state.mode = null;
-      return;
+      continue;
+    }
+    state.mode = 'nightmare';
+    if (state.trials.length === 0) {
+      continue;
     }
     const answer = IDIOMS[level];
     const parsedAnswer = parseWord(answer);
-    const parsedInputs = state.trials.map(parseWord);
-    const matchResults = parsedInputs.map(input => matchAnswer(input, parsedAnswer));
+    let lastParsedInput = parseWord(state.trials[0]);
+    let lastMatchResult = matchAnswer(lastParsedInput, parsedAnswer);
     for (let i = 1; i < state.trials.length; ++i) {
-      for (let j = 0; j < i; ++j) {
-        if (!isBetterMatch(parsedInputs[i], matchResults[i], parsedInputs[j], matchResults[j])) {
-          state.mode = 'hard';
-          return;
-        }
+      const currentParsedInput = parseWord(state.trials[i]);
+      const currentMatchResult = matchAnswer(currentParsedInput, parsedAnswer);
+      if (!isBetterMatch(currentParsedInput, currentMatchResult, lastParsedInput, lastMatchResult)) {
+        state.mode = 'hard';
+        break;
       }
+      lastParsedInput = currentParsedInput;
+      lastMatchResult = currentMatchResult;
     }
-    state.mode = 'nightmare';
   }
+  levelModesRecalculated = true;
 }
 
 const migrations = [
@@ -43,12 +53,19 @@ const migrations = [
       recalculateLevelModes();
     },
   },
+  {
+    version: '0.1.3',
+    migrate: () => {
+      recalculateLevelModes();
+    },
+  },
 ];
 
 export function runMigraions() {
   for (const migration of migrations) {
     if (compareVersion(version.value, migration.version) < 0) {
       migration.migrate();
+      version.value = migration.version;
     }
   }
   version.value = packageVersion;

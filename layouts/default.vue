@@ -71,7 +71,7 @@ onBeforeMount(async () => {
     initIdioms(),
     initJieba(),
   ]);
-  gameInited.value = true;
   runMigraions();
+  gameInited.value = true;
 });
 </script>

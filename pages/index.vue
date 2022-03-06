@@ -129,10 +129,13 @@ function handleInput(event: Event) {
 const isBetterInput = computed(() => {
   if (input.value.length !== 4) {
     return false;
+  } else if (parsedTrials.value!.length === 0) {
+    return true;
   }
   const parsedInput = parseWord(input.value);
   const matchResult = matchAnswer(parsedInput, parsedAnswer.value);
-  return parsedTrials.value!.every(trial => isBetterMatch(parsedInput, matchResult, trial.word, trial.result));
+  const lastTrial = parsedTrials.value![parsedTrials.value!.length - 1];
+  return isBetterMatch(parsedInput, matchResult, lastTrial.word, lastTrial.result);
 });
 
 const isValidInput = computed(() => {
