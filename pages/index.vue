@@ -22,6 +22,8 @@
           v-if="!isFinished"
           :word="input"
           active
+          class="animate-duration-400"
+          :class="{ 'animate-head-shake': shake }"
           @click="focus()"
         />
       </section>
@@ -35,7 +37,8 @@
             autocomplete="off"
             placeholder="输入四字成语..."
             :disabled="isFinished"
-            class="w-86 p-3 border-2 border-gray-400/10 outline-none bg-transparent text-center"
+            class="w-86 p-3 border-2 border-gray-400/10 outline-none bg-transparent text-center animate-duration-400"
+            :class="{ 'animate-head-shake': shake }"
             @input="handleInput"
             @keydown.enter="enter()"
           >
@@ -72,13 +75,20 @@
           </div>
         </section>
       </Transition>
-      <Transition name="fade">
+      <Transition name="fade-in">
         <div v-if="isFinishedDelay && isFinished">
           <ResultFooter />
           <LevelComplete />
         </div>
       </Transition>
     </div>
+    <Toast v-model="showToast">
+      <div class="m-5 px-8 py-4 border border-gray-400/10 shadow bg-base text-lg font-serif">
+        <p class="pl-1 tracking-0.25rem">
+          成语不在词库内
+        </p>
+      </div>
+    </Toast>
   </div>
 </template>
 
@@ -104,6 +114,8 @@ const el = ref<HTMLInputElement>();
 const input = ref('');
 const inputValue = ref('');
 const isFinishedDelay = debouncedRef(isFinished, 800);
+const showToast = autoResetRef(false, 1500);
+const shake = autoResetRef(false, 500);
 
 function handleInput(event: Event) {
   const el = event.target! as HTMLInputElement;
@@ -129,6 +141,8 @@ const isValidInput = computed(() => {
   } else if (hardMode.value == null) {
     return true;
   } else if (!isIdiom(input.value)) {
+    showToast.value = true;
+    shake.value = true;
     return false;
   } else if (hardMode.value === 'hard') {
     return true;
@@ -186,13 +200,13 @@ watch(isFailed, failed => {
 </script>
 
 <style lang="postcss" scoped>
-:deep(.fade-enter-active) {
+:deep(.fade-in-enter-active) {
   @apply transition duration-1000 ease;
 }
 :deep(.fade-out-leave-active) {
   @apply transition duration-500 ease;
 }
-:deep(.fade-enter-from), :deep(.fade-out-leave-to) {
+:deep(.fade-in-enter-from), :deep(.fade-out-leave-to) {
   @apply opacity-0 transform translate-y-10px;
 }
 </style>
