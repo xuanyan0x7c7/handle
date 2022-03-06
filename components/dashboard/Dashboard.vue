@@ -49,11 +49,19 @@
       </DashboardItem>
     </div>
     <div class="flex flex-wrap gap-4 justify-center min-w-100px py-2">
-      <DashboardItem :value="Math.round(historyTrialsCount / gamesCount).toFixed(1)">
+      <DashboardItem :value="Math.round(historyTrialsCount / gamesCount * 10) / 10">
         平均尝试
       </DashboardItem>
       <DashboardItem :value="averageDuration ?? '-'">
         平均用时
+      </DashboardItem>
+    </div>
+    <div class="flex flex-wrap gap-4 justify-center min-w-100px py-2">
+      <DashboardItem :value="idiomStats.distinctIdiomsCount">
+        成语使用
+      </DashboardItem>
+      <DashboardItem :value="Math.round(idiomStats.idiomsCount / idiomStats.wordsCount * 100) + '%'">
+        成语比例
       </DashboardItem>
     </div>
   </section>
@@ -63,6 +71,7 @@
 import { showDashboard } from '@/lib/state';
 import { gamesCount, history } from '@/lib/storage';
 import { formatDuration } from '@/lib/util';
+import { isIdiom } from '~~/lib/idioms';
 
 const passedTrials = computed(() => history.value.filter(state => state?.passed).map(x => x!));
 const passedCount = computed(() => passedTrials.value.length);
@@ -97,6 +106,29 @@ const averageDuration = computed(() => {
   }
   const durations = items.map(m => m.duration!).reduce((a, b) => a + b);
   return formatDuration(durations / items.length);
+});
+
+const idiomStats = computed(() => {
+  const usedIdioms = new Set<string>();
+  let wordsCount = 0;
+  let idiomsCount = 0;
+  for (const state of history.value) {
+    if (state?.trials == null) {
+      continue;
+    }
+    for (const word of state.trials) {
+      ++wordsCount;
+      if (isIdiom(word)) {
+        ++idiomsCount;
+        usedIdioms.add(word);
+      }
+    }
+  }
+  return {
+    wordsCount,
+    idiomsCount,
+    distinctIdiomsCount: usedIdioms.size,
+  };
 });
 
 function close() {
