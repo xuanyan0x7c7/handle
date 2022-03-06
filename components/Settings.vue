@@ -37,21 +37,21 @@
       </button>
       <button
         class="square-btn m-2"
-        :class="buttonClass(checkAssist)"
+        :class="buttonClass(useCheckAssist)"
         @click="toggleCheckAssist()"
       >
         检查辅助
-        <div v-if="checkAssist" class="square-btn-mark" />
+        <div v-if="useCheckAssist" class="square-btn-mark" />
       </button>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { checkAssist, colorblind, hardMode, useNumberTone } from '@/lib/storage';
+import { colorblind, hardMode, useCheckAssist, useNumberTone } from '@/lib/storage';
 
 const toggleColorblind = useToggle(colorblind);
-const toggleCheckAssist = useToggle(checkAssist);
+const toggleCheckAssist = useToggle(useCheckAssist);
 
 function switchHardMode(mode: 'hard' | 'nightmare' | null) {
   hardMode.value = mode;

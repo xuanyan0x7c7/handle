@@ -37,12 +37,12 @@
             :disabled="isFinished"
             class="w-86 p-3 border-2 border-gray-400/10 outline-none bg-transparent text-center"
             @input="handleInput"
-            @keydown.enter="go()"
+            @keydown.enter="enter()"
           >
           <button
             class="btn mt-3 px-6 py-2"
             :disabled="!isValidInput"
-            @click="go()"
+            @click="enter()"
           >
             确 定
           </button>
@@ -137,7 +137,7 @@ const isValidInput = computed(() => {
   }
 });
 
-function go() {
+function enter() {
   if (!isValidInput.value) {
     return;
   }

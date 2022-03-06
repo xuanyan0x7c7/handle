@@ -11,7 +11,7 @@ export const history = useLocalStorage<(LevelState | null)[]>('handle-level-stat
 export const useNumberTone = useLocalStorage('handle-number-tone', false);
 export const colorblind = useLocalStorage('handle-colorblind', false);
 export const hardMode = useLocalStorage<HardMode>('handle-hard-mode', null);
-export const checkAssist = useLocalStorage('handle-check-assist', true);
+export const useCheckAssist = useLocalStorage('handle-check-assist', true);
 export const currentLevel = useLocalStorage('handle-level', 0);
 
 export const levelState = computed<LevelState>({

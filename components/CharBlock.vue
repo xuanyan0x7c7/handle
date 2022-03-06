@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { getSymbolState, useMask } from '@/lib/state';
-import { checkAssist, useNumberTone } from '@/lib/storage';
+import { useCheckAssist, useNumberTone } from '@/lib/storage';
 import type { ExtendedMatchResult, ExtendedMatchType, MatchResult, ParsedChar } from '@/lib/types';
 
 const props = defineProps<{
@@ -98,7 +98,7 @@ const charDisplay = computed(() => {
 const parsed = computed(() => {
   if (props.answer) {
     return props.answer;
-  } else if (!props.char || !checkAssist.value || !props.active) {
+  } else if (!props.char || !useCheckAssist.value || !props.active) {
     return {};
   }
   return {
