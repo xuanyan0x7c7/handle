@@ -9,13 +9,13 @@
       <b>关卡列表</b>
     </header>
     <div class="flex gap-4 mb-4 items-center">
-      <button class="btn px-2" :disabled="page === 0">
+      <button class="btn px-2" :disabled="page === 0" @click="previousPage()">
         <Icon icon="carbon-arrow-left" />
       </button>
       <p>
         {{ page * 20 + 1 }} - {{ page * 20 + 20 }}
       </p>
-      <button class="btn px-2" :disabled="page === Math.ceil(IDIOMS.length / 20)">
+      <button class="btn px-2" :disabled="page + 1 === totalPages" @click="nextPage()">
         <Icon icon="carbon-arrow-right" />
       </button>
     </div>
@@ -39,6 +39,7 @@ import { showLevelList } from '@/lib/state';
 import { currentLevel, history } from '@/lib/storage';
 
 const page = ref(Math.floor(currentLevel.value / 20));
+const totalPages = computed(() => Math.ceil(IDIOMS.length / 20));
 
 function levelHasAnswer(level: number) {
   const state = history.value[level];
@@ -71,6 +72,14 @@ function* range(start: number, end: number) {
 function playLevel(level: number) {
   showLevelList.value = false;
   currentLevel.value = level;
+}
+
+function previousPage() {
+  --page.value;
+}
+
+function nextPage() {
+  ++page.value;
 }
 
 function close() {
