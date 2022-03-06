@@ -95,7 +95,6 @@ export function isBetterMatch(
   previousParsedInput: ParsedChar[],
   previousMatch: MatchResult[],
 ) {
-  console.log(currentParsedInput, currentMatch, previousParsedInput, previousMatch);
   for (const key of ['char', 'displayInitial', 'final', 'tone'] as const) {
     const currentMisplacedCount: Record<string | number, number> = {};
     const previousMisplacedCount: Record<string | number, number> = {};
@@ -118,7 +117,6 @@ export function isBetterMatch(
         previousMisplacedCount[previousItem] = (previousMisplacedCount[previousItem] ?? 0) + 1;
       }
     }
-    console.log(key, currentMisplacedCount, previousMisplacedCount);
     for (const item of Object.keys(previousMisplacedCount)) {
       if ((currentMisplacedCount[item] ?? 0) < previousMisplacedCount[item]) {
         return false;
