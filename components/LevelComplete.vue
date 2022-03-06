@@ -4,7 +4,7 @@
       <ShareButton class="m-4" />
       <ToggleMask hint />
     </div>
-    <div class="w-10 h-px border-t border-gray-400/10 mt-4 mb-6 mx-a" />
+    <div class="w-10 h-px mt-4 mb-6 mx-auto border-t border-gray-400/10" />
     <button
       :disabled="!hasNextLevel"
       class="btn flex flex-wrap gap-x-3 justify-center items-center mx-auto px-4 py-2 text-xl font-serif whitespace-nowrap"
