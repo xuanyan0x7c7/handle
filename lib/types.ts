@@ -13,6 +13,11 @@ export type ExtendedMatchType = MatchType | 'deleted';
 export type MatchResult = Record<'char' | 'displayInitial' | 'final' | 'tone', MatchType>;
 export type ExtendedMatchResult = Record<keyof MatchResult, ExtendedMatchType>;
 
+export type CharMatchResult = {
+  parsedChar: ParsedChar;
+  matchResult: MatchResult;
+};
+
 export type HardMode = 'hard' | 'nightmare' | null;
 
 export type LevelState = {

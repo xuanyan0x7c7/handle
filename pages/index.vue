@@ -94,7 +94,7 @@
 
 <script setup lang="ts">
 import { TRIALS_LIMIT } from '@/lib/constants';
-import { isBetterMatch, matchAnswer, parseWord } from '@/lib/pinyin';
+import { isBetterMatch, parseAndMatchAnswer } from '@/lib/pinyin';
 import { isIdiom } from '@/lib/idioms';
 import {
   isFailed,
@@ -132,10 +132,10 @@ const isBetterInput = computed(() => {
   } else if (parsedTrials.value!.length === 0) {
     return true;
   }
-  const parsedInput = parseWord(input.value);
-  const matchResult = matchAnswer(parsedInput, parsedAnswer.value);
-  const lastTrial = parsedTrials.value![parsedTrials.value!.length - 1];
-  return isBetterMatch(parsedInput, matchResult, lastTrial.word, lastTrial.result);
+  return isBetterMatch(
+    parseAndMatchAnswer(input.value, parsedAnswer.value),
+    parsedTrials.value![parsedTrials.value!.length - 1],
+  );
 });
 
 const isValidInput = computed(() => {

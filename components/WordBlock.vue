@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <div
-      v-for="parsedChar, index in parseWord(word.padEnd(4, ' '))"
+      v-for="parsedChar, index in parseWord(formattedWord)"
       :key="index"
       class="relative w-20 h-20 m-1 transform-3d select-none"
     >
@@ -15,7 +15,7 @@
         />
         <CharBlock
           :char="parsedChar"
-          :answer="result[index]"
+          :match="wordMatchResult[index]?.matchResult"
           class="!absolute top-0 left-0 transform-gpu transition-transform duration-600 backface-hidden"
           :class="{ 'rotate-y-180': !flip }"
           :style="{
@@ -27,7 +27,7 @@
       <CharBlock
         v-else
         :char="parsedChar"
-        :answer="result[index]"
+        :match="wordMatchResult[index]?.matchResult"
         :active="active"
       />
     </div>
@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { matchAnswer, parseWord } from '@/lib/pinyin';
+import { parseAndMatchAnswer, parseWord } from '@/lib/pinyin';
 import { parsedAnswer } from '@/lib/state';
 
 const props = withDefaults(
@@ -49,14 +49,17 @@ const props = withDefaults(
   { answer: undefined, animate: true },
 );
 
-const result = computed(() => {
+const formattedWord = computed(() => props.word.padEnd(4, ' ').slice(0, 4));
+
+const wordMatchResult = computed(() => {
   if (props.revealed) {
-    return matchAnswer(
-      parseWord(props.word),
+    return parseAndMatchAnswer(
+      formattedWord.value,
       props.answer ? parseWord(props.answer) : parsedAnswer.value,
     );
+  } else {
+    return [];
   }
-  return [];
 });
 
 const flip = ref(false);

@@ -10,9 +10,6 @@ type Pinyin = {
 };
 
 export function parsePinyin(pinyin: string) {
-  if (pinyin == null) {
-    console.trace();
-  }
   const displayPinyin = pinyin.replace('v', 'ü');
   const formattedPinyin = displayPinyin
     .replace(/([jqxy])u(\w*)$/, '$1ü$2')

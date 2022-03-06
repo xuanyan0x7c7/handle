@@ -64,11 +64,11 @@ import type { ExtendedMatchResult, ExtendedMatchType, MatchResult, ParsedChar } 
 
 const props = defineProps<{
   char?: ParsedChar;
-  answer?: MatchResult;
+  match?: MatchResult;
   active?: boolean;
 }>();
 
-const exact = computed(() => props.answer && Object.values(props.answer).every(type => type === 'exact'));
+const exact = computed(() => props.match && Object.values(props.match).every(type => type === 'exact'));
 
 const toneCharLocation = computed(() => {
   const part = props.char?.pinyin ?? '';
@@ -96,8 +96,8 @@ const charDisplay = computed(() => {
 });
 
 const parsed = computed(() => {
-  if (props.answer) {
-    return props.answer;
+  if (props.match) {
+    return props.match;
   } else if (!props.char || !useCheckAssist.value || !props.active) {
     return {};
   }
@@ -109,7 +109,7 @@ const parsed = computed(() => {
 });
 
 const blockColorClass = computed(() => {
-  if (!props.answer) {
+  if (!props.match) {
     return 'border-gray-400/10';
   } else if (exact.value) {
     return 'border-transparent bg-$c-ok text-white';

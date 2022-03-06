@@ -1,7 +1,7 @@
 import compareVersion from 'semver-compare';
 import { version as packageVersion } from '../package.json';
 import { IDIOMS, isIdiom } from './idioms';
-import { isBetterMatch, matchAnswer, parseWord } from './pinyin';
+import { isBetterMatch, parseAndMatchAnswer, parseWord } from './pinyin';
 import { history, version } from './storage';
 
 let levelModesRecalculated = false;
@@ -24,17 +24,14 @@ function recalculateLevelModes() {
     }
     const answer = IDIOMS[level];
     const parsedAnswer = parseWord(answer);
-    let lastParsedInput = parseWord(state.trials[0]);
-    let lastMatchResult = matchAnswer(lastParsedInput, parsedAnswer);
+    let previousWordMatchResult = parseAndMatchAnswer(state.trials[0], parsedAnswer);
     for (let i = 1; i < state.trials.length; ++i) {
-      const currentParsedInput = parseWord(state.trials[i]);
-      const currentMatchResult = matchAnswer(currentParsedInput, parsedAnswer);
-      if (!isBetterMatch(currentParsedInput, currentMatchResult, lastParsedInput, lastMatchResult)) {
+      const currentWordMatchResult = parseAndMatchAnswer(state.trials[i], parsedAnswer);
+      if (!isBetterMatch(currentWordMatchResult, previousWordMatchResult)) {
         state.mode = 'hard';
         break;
       }
-      lastParsedInput = currentParsedInput;
-      lastMatchResult = currentMatchResult;
+      previousWordMatchResult = currentWordMatchResult;
     }
   }
   levelModesRecalculated = true;

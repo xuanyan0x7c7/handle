@@ -1,4 +1,4 @@
-import type { MatchResult, ParsedChar, MatchType } from '../types';
+import type { MatchResult, ParsedChar, MatchType, CharMatchResult } from '../types';
 import pinyin, { PINYIN_STYLE } from '../pinyin-parser';
 import { parsePinyin } from './util';
 
@@ -89,32 +89,37 @@ export function matchAnswer(input: ParsedChar[], answer: ParsedChar[]): MatchRes
   }));
 }
 
-export function isBetterMatch(
-  currentParsedInput: ParsedChar[],
-  currentMatch: MatchResult[],
-  previousParsedInput: ParsedChar[],
-  previousMatch: MatchResult[],
-) {
+export function parseAndMatchAnswer(word: string, parsedAnswer: ParsedChar[]) {
+  const parsedWord = parseWord(word);
+  const matchResult = matchAnswer(parsedWord, parsedAnswer);
+  const list: CharMatchResult[] = [];
+  for (let i = 0; i < word.length; ++i) {
+    list.push({ parsedChar: parsedWord[i], matchResult: matchResult[i] });
+  }
+  return list;
+}
+
+export function isBetterMatch(current: CharMatchResult[], previous: CharMatchResult[]) {
   for (const key of ['char', 'displayInitial', 'final', 'tone'] as const) {
     const currentMisplacedCount: Record<string | number, number> = {};
     const previousMisplacedCount: Record<string | number, number> = {};
     for (let charIndex = 0; charIndex < 4; ++charIndex) {
-      const currentItem = currentParsedInput[charIndex][key];
-      const currentMatchItem = currentMatch[charIndex][key];
-      const previousItem = previousParsedInput[charIndex][key];
-      const previousMatchItem = previousMatch[charIndex][key];
-      if (previousItem && previousMatchItem === 'exact') {
-        if (currentMatchItem === 'exact') {
+      const currentParsedChar = current[charIndex].parsedChar[key];
+      const currentMatchResult = current[charIndex].matchResult[key];
+      const previousParsedChar = previous[charIndex].parsedChar[key];
+      const previousMatchResult = previous[charIndex].matchResult[key];
+      if (previousParsedChar && previousMatchResult === 'exact') {
+        if (currentMatchResult === 'exact') {
           continue;
         } else {
           return false;
         }
       }
-      if (currentItem && currentMatchItem !== 'none') {
-        currentMisplacedCount[currentItem] = (currentMisplacedCount[currentItem] ?? 0) + 1;
+      if (currentParsedChar && currentMatchResult !== 'none') {
+        currentMisplacedCount[currentParsedChar] = (currentMisplacedCount[currentParsedChar] ?? 0) + 1;
       }
-      if (previousItem && previousMatchItem === 'misplaced') {
-        previousMisplacedCount[previousItem] = (previousMisplacedCount[previousItem] ?? 0) + 1;
+      if (previousParsedChar && previousMatchResult === 'misplaced') {
+        previousMisplacedCount[previousParsedChar] = (previousMisplacedCount[previousParsedChar] ?? 0) + 1;
       }
     }
     for (const item of Object.keys(previousMisplacedCount)) {

@@ -14,32 +14,31 @@
 </template>
 
 <script setup lang="ts">
-import { matchAnswer, parseWord } from '@/lib/pinyin';
+import { parseAndMatchAnswer } from '@/lib/pinyin';
 import { levelNoHanzi, parsedAnswer } from '@/lib/state';
 import { levelState, trials } from '@/lib/storage';
 import { isMobile } from '@/lib/util';
 
 const lines = computed(() => {
-  const table = trials.value.map(word => {
-    const parsed = parseWord(word);
-    return matchAnswer(parsed, parsedAnswer.value)
-      .map((result, index) => {
-        if (result.char === 'exact') {
+  const table = trials.value.map(
+    word => parseAndMatchAnswer(word, parsedAnswer.value)
+      .map(({ parsedChar, matchResult }) => {
+        if (matchResult.char === 'exact') {
           return '🟩';
-        } else if (result.char === 'misplaced') {
+        } else if (matchResult.char === 'misplaced') {
           return '🟧';
-        } else if (parsed[index].displayInitial && result.displayInitial === 'exact') {
+        } else if (parsedChar.displayInitial && matchResult.displayInitial === 'exact') {
           return '🟠';
-        } else if (parsed[index].final && result.final === 'exact') {
+        } else if (parsedChar.final && matchResult.final === 'exact') {
           return '🟠';
-        } else if (result.displayInitial === 'misplaced' || result.final === 'misplaced') {
+        } else if (matchResult.displayInitial === 'misplaced' || matchResult.final === 'misplaced') {
           return '🟡';
         } else {
           return '⬜️';
         }
       })
-      .join('');
-  });
+      .join(''),
+  );
 
   let levelMode = '';
   if (levelState.value.mode === 'nightmare') {

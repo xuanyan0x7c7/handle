@@ -1,6 +1,6 @@
 import { TRIALS_LIMIT } from './constants';
 import { getIdiomOfLevel } from './idioms';
-import { matchAnswer, parseWord } from './pinyin';
+import { parseAndMatchAnswer, parseWord } from './pinyin';
 import { currentLevel, levelState, trials } from './storage';
 import type { MatchType } from './types';
 
@@ -25,11 +25,7 @@ export const parsedTrials = computed(() => {
   if (!gameInited.value) {
     return null;
   }
-  return trials.value.map(trial => {
-    const word = parseWord(trial);
-    const result = matchAnswer(word, parsedAnswer.value);
-    return { word, result };
-  });
+  return trials.value.map(trial => parseAndMatchAnswer(trial, parsedAnswer.value));
 });
 
 export const isPassed = computed(() => {
@@ -41,8 +37,8 @@ export const isPassed = computed(() => {
   } else if (parsedTrials.value!.length === 0) {
     return false;
   }
-  const lastTrial = parsedTrials.value![parsedTrials.value!.length - 1];
-  return lastTrial.result.every(result => result.char === 'exact');
+  const lastParsedTrial = parsedTrials.value![parsedTrials.value!.length - 1];
+  return lastParsedTrial.every(result => result.matchResult.char === 'exact');
 });
 
 export const isFailed = computed(() => !isPassed.value && trials.value.length >= TRIALS_LIMIT);
@@ -52,32 +48,31 @@ export function getSymbolState(symbol?: string | number, key?: 'displayInitial' 
   if (!gameInited.value) {
     return null;
   }
-  const results: MatchType[] = [];
+  const matchTypes: MatchType[] = [];
   for (const trial of parsedTrials.value!) {
     for (let i = 0; i < 4; i++) {
-      const word = trial.word[i];
-      const result = trial.result[i];
+      const { parsedChar, matchResult } = trial[i];
       if (key) {
-        if (word[key] === symbol) {
-          results.push(result[key]);
+        if (parsedChar[key] === symbol) {
+          matchTypes.push(matchResult[key]);
         }
       } else {
-        if (word.displayInitial === symbol) {
-          results.push(result.displayInitial);
+        if (parsedChar.displayInitial === symbol) {
+          matchTypes.push(matchResult.displayInitial);
         }
-        if (word.final === symbol) {
-          results.push(result.final);
+        if (parsedChar.final === symbol) {
+          matchTypes.push(matchResult.final);
         }
       }
     }
   }
-  if (results.includes('exact')) {
+  if (matchTypes.includes('exact')) {
     return 'exact';
   }
-  if (results.includes('misplaced')) {
+  if (matchTypes.includes('misplaced')) {
     return 'misplaced';
   }
-  if (results.includes('none')) {
+  if (matchTypes.includes('none')) {
     return 'none';
   }
   return null;
