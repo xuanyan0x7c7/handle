@@ -44,6 +44,18 @@
       当四个格子都为青色时，你便赢得了游戏！
     </p>
     <hr class="separator">
+    <p>
+      本游戏严格按照
+      <a
+        href="http://www.moe.gov.cn/ewebeditor/uploadfile/2015/03/02/20150302165814246.pdf"
+        target="_blank"
+        class="text-$c-primary hover:text-$c-primary-deep"
+      >
+        汉语拼音方案
+      </a>
+      判断和展示拼音，请在游戏前认真阅读。
+    </p>
+    <hr class="separator">
     <button class="btn px-4 py-2" @click="start()">
       <span class="pl-1 tracking-1">开始游戏</span>
     </button>
