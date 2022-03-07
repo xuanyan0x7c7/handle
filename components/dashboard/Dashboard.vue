@@ -13,17 +13,19 @@
         尝试次数分布
       </p>
       <div v-for="count, trials in trialsCountList" :key="trials" class="flex gap-2 items-center">
-        <div class="flex-none w-4 opacity-50 text-right">
-          {{ trials === 10 ? '10+' : trials }}
-        </div>
-        <div
-          class="flex justify-end h-5 bg-$c-primary text-right text-white"
-          :style="{ width: Math.max(count / trialsMaxCount * 100, 1) + '%' }"
-        >
-          <div v-if="count > 0" class="my-auto mr-1 text-sm">
-            {{ count }}
+        <template v-if="trials > 0">
+          <div class="flex-none w-6 opacity-50 text-right">
+            {{ trials === 10 ? '10+' : trials }}
           </div>
-        </div>
+          <div
+            class="flex justify-end h-5 bg-$c-primary text-right text-white"
+            :style="{ width: Math.max(count / trialsMaxCount * 100, 1) + '%' }"
+          >
+            <div v-if="count > 0" class="my-auto mr-1 text-sm">
+              {{ count }}
+            </div>
+          </div>
+        </template>
       </div>
     </div>
     <div class="flex flex-wrap gap-4 justify-center min-w-100px py-2">
