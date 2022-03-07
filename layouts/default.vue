@@ -29,11 +29,11 @@
       <Modal v-model="showShareDialog" direction="top">
         <ShareDialog />
       </Modal>
-      <Modal v-model="showVariants" direction="top">
-        <VariantLinks />
-      </Modal>
       <Modal v-model="showHelp" direction="top">
         <Welcome />
+      </Modal>
+      <Modal v-model="showVariants" direction="top">
+        <VariantLinks />
       </Modal>
       <Confetti />
     </template>
