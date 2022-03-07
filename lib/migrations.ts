@@ -56,6 +56,12 @@ const migrations = [
       recalculateLevelModes();
     },
   },
+  {
+    version: '0.1.4',
+    migrate: () => {
+      recalculateLevelModes();
+    },
+  },
 ];
 
 export function runMigraions() {

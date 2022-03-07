@@ -13,14 +13,12 @@ export type Options = {
   style: PINYIN_STYLE;
   segment: boolean;
   heteronym: boolean;
-  group: boolean;
 };
 
 export const DEFAULT_OPTIONS: Options = {
   style: PINYIN_STYLE.TONE,
   segment: false,
   heteronym: false,
-  group: false,
 };
 
 const INITIALS = 'b,p,m,f,d,t,n,l,g,k,h,j,q,x,r,zh,ch,sh,z,c,s'.split(',');
@@ -41,24 +39,21 @@ let jieba: {
   cut: (text: string, hmm: boolean) => string[];
 } | null = null;
 
-function combo2array(array1: string[], array2: string[]) {
-  if (array1.length === 0) {
-    return array2;
-  }
-  if (array2.length === 0) {
-    return array1;
-  }
-  const result: string[] = [];
-  for (let i = 0, l = array1.length; i < l; ++i) {
-    for (let j = 0, m = array2.length; j < m; ++j) {
-      result.push(array1[i] + array2[j]);
+function product<T>(array: T[][]) {
+  function productReduce<T>(array1: T[][], array2: T[]) {
+    const result: T[][] = [];
+    for (const x of array1) {
+      for (const y of array2) {
+        result.push([...x, y]);
+      }
     }
+    return result;
+  }
+  let result: T[][] = [[]];
+  for (const item of array) {
+    result = productReduce(result, item);
   }
   return result;
-}
-
-function combo(array: string[][]) {
-  return array.reduce(combo2array, []);
 }
 
 class Pinyin {
@@ -100,29 +95,26 @@ class Pinyin {
     const phrases = mergedOptions.segment ? jieba!.cut(hans, true) : hans;
     const pinyins: string[][] = [];
     let noHans = '';
-    for (const words of phrases) {
-      const firstCharCode = words.charCodeAt(0);
+    for (const phrase of phrases) {
+      const firstCharCode = phrase.charCodeAt(0);
       if (this.pinyinDict[firstCharCode]) {
         if (noHans.length > 0) {
           pinyins.push([noHans]);
           noHans = '';
         }
-        const newPinyins = words.length === 1
-          ? this.simpleConvert(words, mergedOptions)
-          : this.phrasePinyin(words, mergedOptions);
-        if (mergedOptions.group) {
-          pinyins.push(combo(newPinyins));
-        } else {
-          pinyins.push(...newPinyins);
-        }
+        pinyins.push(
+          phrase.length === 1
+            ? this.simpleConvert(phrase, mergedOptions)
+            : this.phrasePinyin(phrase, mergedOptions),
+        );
       } else {
-        noHans += words;
+        noHans += phrase;
       }
     }
     if (noHans.length > 0) {
       pinyins.push([noHans]);
     }
-    return pinyins;
+    return product(pinyins).map(pinyin => pinyin.flatMap(s => s.split(' ')));
   }
 
   compare(hanA: string, hanB: string) {
@@ -131,8 +123,7 @@ class Pinyin {
     return String(pinyinA).localeCompare(String(pinyinB));
   }
 
-  private simpleConvert(hans: string, options: Partial<Options> = {}) {
-    const mergedOptions: Options = Object.assign({}, DEFAULT_OPTIONS, options);
+  private simpleConvert(hans: string, options: Options) {
     const pinyins: string[][] = [];
     let noHans = '';
     for (const words of hans) {
@@ -142,7 +133,7 @@ class Pinyin {
           pinyins.push([noHans]);
           noHans = '';
         }
-        pinyins.push(this.singlePinyin(words, mergedOptions));
+        pinyins.push(this.singlePinyin(words, options));
       } else {
         noHans += words;
       }
@@ -150,25 +141,24 @@ class Pinyin {
     if (noHans.length > 0) {
       pinyins.push([noHans]);
     }
-    return pinyins;
+    return product(pinyins).map(pinyin => pinyin.join(' '));
   }
 
   private phrasePinyin(phrase: string, options: Options) {
-    const pinyins: string[][] = [];
     if (phrase in this.phrasesDict) {
-      for (const item of this.phrasesDict[phrase]) {
-        pinyins.push(
-          options.heteronym
-            ? item.map(pyItem => Pinyin.toFixed(pyItem, options.style))
-            : [Pinyin.toFixed(item[0], options.style)],
-        );
+      const toFixed = (pinyin: string) => Pinyin.toFixed(pinyin, options.style);
+      if (options.heteronym) {
+        return this.phrasesDict[phrase].map(pinyin => pinyin.map(toFixed).join(' '));
+      } else {
+        return [this.phrasesDict[phrase][0].map(toFixed).join(' ')];
       }
     } else {
+      const pinyins: string[][] = [];
       for (const word of phrase) {
-        pinyins.push(...this.simpleConvert(word, options));
+        pinyins.push(this.simpleConvert(word, options));
       }
+      return product(pinyins).map(pinyin => pinyin.join(' '));
     }
-    return pinyins;
   }
 
   private singlePinyin(han: string, options: Options): string[] {
@@ -202,11 +192,15 @@ export async function initJieba() {
     await jieba.init();
     const [
       { default: pinyinDict },
-      { default: phrasesDict },
+      { default: phrasesJSON },
     ] = await Promise.all([
       import('./data/dict-zi.json'),
       import('./data/phrases-dict.json'),
     ]);
+    const phrasesDict: Record<string, string[][]> = {};
+    for (const [phrase, pinyins] of Object.entries(phrasesJSON)) {
+      phrasesDict[phrase] = pinyins.map(pinyin => pinyin.split(' '));
+    }
     pinyin.setDict(pinyinDict, phrasesDict);
   }
 }
