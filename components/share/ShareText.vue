@@ -1,12 +1,12 @@
 <template>
-  <p class="w-80 mb-4 text-center">
-    {{ true ? '分享内容已复制到剪贴板' : '请复制以下文本进行分享' }}
+  <p class="mb-4 text-center">
+    {{ copied ? '分享内容已复制到剪贴板' : '请复制以下文本进行分享' }}
   </p>
   <textarea
     :rows="lines.length"
     :value="text"
     readonly
-    class="p-5 rounded bg-gray-500/5 outline-none resize-none text-left leading-19px tracking-1px select-text"
+    class="w-90 p-5 rounded bg-gray-500/5 outline-none resize-none text-center leading-19px tracking-1px select-text"
   />
   <button v-if="share.isSupported" class="square-btn my-4" @click="shareSystem()">
     <Icon icon="carbon-share" /> 调用系统分享
