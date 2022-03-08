@@ -71,39 +71,11 @@ export function recalculateLevelStates(forceRecalculate = false) {
   levelModesRecalculated = true;
 }
 
-const migrations = [
+const migrations: (
+  { version: string; migrate: () => any } | { versions: string[]; migrate: () => any }
+)[] = [
   {
-    version: '0.1.0',
-    migrate: () => {
-      recalculateLevelStates();
-    },
-  },
-  {
-    version: '0.1.2',
-    migrate: () => {
-      recalculateLevelStates();
-    },
-  },
-  {
-    version: '0.1.3',
-    migrate: () => {
-      recalculateLevelStates();
-    },
-  },
-  {
-    version: '0.1.4',
-    migrate: () => {
-      recalculateLevelStates();
-    },
-  },
-  {
-    version: '0.1.5',
-    migrate: () => {
-      recalculateLevelStates();
-    },
-  },
-  {
-    version: '0.1.6',
+    versions: ['0.1.0', '0.1.2', '0.1.3', '0.1.4', '0.1.5', '0.1.6'],
     migrate: () => {
       recalculateLevelStates();
     },
@@ -111,7 +83,16 @@ const migrations = [
 ];
 
 export function runMigrations() {
-  for (const migration of migrations) {
+  const parsedMigrations = migrations
+    .flatMap(migration => {
+      if ('versions' in migration) {
+        return migration.versions.map(version => ({ version, migrate: migration.migrate }));
+      } else {
+        return migration;
+      }
+    })
+    .sort((x, y) => compareVersion(x.version, y.version));
+  for (const migration of parsedMigrations) {
     if (compareVersion(version.value, migration.version) < 0) {
       migration.migrate();
       version.value = migration.version;
