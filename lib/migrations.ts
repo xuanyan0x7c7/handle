@@ -102,6 +102,12 @@ const migrations = [
       recalculateLevelStates();
     },
   },
+  {
+    version: '0.1.6',
+    migrate: () => {
+      recalculateLevelStates();
+    },
+  },
 ];
 
 export function runMigrations() {
