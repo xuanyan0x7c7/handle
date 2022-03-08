@@ -157,6 +157,10 @@ const isValidInput = computed(() => {
 function enter() {
   if (!isValidInput.value) {
     return;
+  } else if (levelState.value.trials?.includes(input.value)) {
+    input.value = '';
+    inputValue.value = '';
+    return;
   }
   if (!isIdiom(input.value)) {
     levelState.value.mode = null;
