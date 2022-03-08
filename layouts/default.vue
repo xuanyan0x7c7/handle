@@ -47,7 +47,7 @@
 import { breakpointsTailwind } from '@vueuse/core';
 import { initIdioms } from '@/lib/idioms';
 import '@/lib/init';
-import { runMigraions } from '@/lib/migrations';
+import { runMigrations } from '@/lib/migrations';
 import { initJieba } from '@/lib/pinyin-parser';
 import {
   gameInited,
@@ -71,7 +71,7 @@ onBeforeMount(async () => {
     initIdioms(),
     initJieba(),
   ]);
-  runMigraions();
+  runMigrations();
   gameInited.value = true;
 });
 </script>

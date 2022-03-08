@@ -1,18 +1,29 @@
 import { version as packageVersion } from '../package.json';
 import type { HardMode, LevelState } from './types';
 
-if (localStorage.getItem('handle-version') == null) {
+export const STORAGE_KEYS = {
+  VERSION: 'handle-version',
+  INITIALIZED: 'handle-initialized',
+  LEVEL_STATE: 'handle-level-state',
+  NUMBER_TONE: 'handle-number-tone',
+  COLORBLIND: 'handle-colorblind',
+  HARD_MODE: 'handle-hard-mode',
+  CHECK_ASSIST: 'handle-check-assist',
+  LEVEL: 'handle-level',
+} as const;
+
+if (localStorage.getItem(STORAGE_KEYS.VERSION) == null) {
   localStorage.clear();
 }
 
-export const version = useLocalStorage('handle-version', packageVersion);
-export const initialized = useLocalStorage('handle-initialized', false);
-export const history = useLocalStorage<(LevelState | null)[]>('handle-level-state', []);
-export const useNumberTone = useLocalStorage('handle-number-tone', false);
-export const colorblind = useLocalStorage('handle-colorblind', false);
-export const hardMode = useLocalStorage<HardMode>('handle-hard-mode', null);
-export const useCheckAssist = useLocalStorage('handle-check-assist', true);
-export const currentLevel = useLocalStorage('handle-level', 0);
+export const version = useLocalStorage(STORAGE_KEYS.VERSION, packageVersion);
+export const initialized = useLocalStorage(STORAGE_KEYS.INITIALIZED, false);
+export const history = useLocalStorage<(LevelState | null)[]>(STORAGE_KEYS.LEVEL_STATE, []);
+export const useNumberTone = useLocalStorage(STORAGE_KEYS.NUMBER_TONE, false);
+export const colorblind = useLocalStorage(STORAGE_KEYS.COLORBLIND, false);
+export const hardMode = useLocalStorage<HardMode>(STORAGE_KEYS.HARD_MODE, null);
+export const useCheckAssist = useLocalStorage(STORAGE_KEYS.CHECK_ASSIST, true);
+export const currentLevel = useLocalStorage(STORAGE_KEYS.LEVEL, 0);
 
 export const levelState = computed<LevelState>({
   get() {
