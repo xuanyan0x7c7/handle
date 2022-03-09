@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { showShareDialog } from '~~/lib/state';
+import { showShareDialog } from '@/lib/state';
 
 type ShareType = 'text' | 'image' | '';
 const shareType = ref<ShareType>('');

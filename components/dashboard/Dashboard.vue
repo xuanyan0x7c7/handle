@@ -70,10 +70,10 @@
 </template>
 
 <script setup lang="ts">
+import { isIdiom } from '@/lib/idioms';
 import { showDashboard } from '@/lib/state';
 import { gamesCount, history } from '@/lib/storage';
 import { formatDuration } from '@/lib/util';
-import { isIdiom } from '~~/lib/idioms';
 
 const passedTrials = computed(() => history.value.filter(state => state?.passed).map(x => x!));
 const passedCount = computed(() => passedTrials.value.length);

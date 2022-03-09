@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { breakpointsTailwind } from '@vueuse/core';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { initIdioms } from '@/lib/idioms';
 import '@/lib/init';
 import { runMigrations } from '@/lib/migrations';

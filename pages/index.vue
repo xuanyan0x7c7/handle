@@ -93,6 +93,7 @@
 </template>
 
 <script setup lang="ts">
+import { autoResetRef, debouncedRef, useToggle } from '@vueuse/core';
 import { TRIALS_LIMIT } from '@/lib/constants';
 import { isBetterMatch, parseAndMatchAnswer } from '@/lib/pinyin';
 import { isIdiom } from '@/lib/idioms';

@@ -8,19 +8,19 @@
   </NuxtLayout>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { useWindowSize } from '@vueuse/core';
+
+const { height } = useWindowSize();
+watch(height, height => {
+  document.documentElement.style.setProperty('--vh', `${height / 100}px`);
+});
+
 window.addEventListener('load', () => {
   if (!('serviceWorker' in navigator)) {
     throw new Error('serviceWorker is not supported in current browser!');
   }
   navigator.serviceWorker.register('/sw.js');
-});
-</script>
-
-<script setup lang="ts">
-const { height } = useWindowSize();
-watch(height, height => {
-  document.documentElement.style.setProperty('--vh', `${height / 100}px`);
 });
 </script>
 

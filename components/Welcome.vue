@@ -76,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import { useDark, useToggle } from '@vueuse/core';
 import { showHelp, showVariants, useMask } from '@/lib/state';
 import { initialized } from '@/lib/storage';
 

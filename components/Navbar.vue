@@ -28,6 +28,7 @@
 </template>
 
 <script setup lang="ts">
+import { useDark, useToggle } from '@vueuse/core';
 import { showDashboard, showHelp, showLevelList, showSettings, useMask } from '@/lib/state';
 import { gamesCount } from '@/lib/storage';
 

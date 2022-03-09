@@ -1,3 +1,4 @@
+import { useDocumentVisibility } from '@vueuse/core';
 import { isFinished, isPassed, showCheatSheet, showHelp } from './state';
 import { initialized, levelState, markEnd, markStart } from './storage';
 

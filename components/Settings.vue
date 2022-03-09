@@ -56,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import { useClipboard, useToggle } from '@vueuse/core';
 import { IDIOMS } from '@/lib/idioms';
 import { recalculateLevelStates, runMigrations } from '@/lib/migrations';
 import {
