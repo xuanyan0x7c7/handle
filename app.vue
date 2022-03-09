@@ -2,10 +2,20 @@
   <Title>汉兜 - 汉字 Wordle</Title>
   <Meta name="description" content="汉兜 - 汉字 Wordle" />
   <Link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <Link rel="manifest" href="/manifest.json" />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
 </template>
+
+<script lang="ts">
+window.addEventListener('load', () => {
+  if (!('serviceWorker' in navigator)) {
+    throw new Error('serviceWorker is not supported in current browser!');
+  }
+  navigator.serviceWorker.register('/sw.js');
+});
+</script>
 
 <script setup lang="ts">
 const { height } = useWindowSize();
